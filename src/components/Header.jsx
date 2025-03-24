@@ -1,0 +1,9 @@
+function Header({ name }) {
+  return (
+    <div className="bg-maincolor text-center p-4 border-y-2 border-black mb-4">
+      <h1 className="font-mogra text-4xl ">{name}</h1>
+    </div>
+  );
+}
+
+export default Header;

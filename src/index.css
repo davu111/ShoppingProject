@@ -7,3 +7,15 @@
   font-weight: 400;
   font-style: normal;
 }
+
+.bg-maincolor {
+  background-color: #ffc22c;
+}
+
+.bg-lightcolor {
+  background-color: #ffdb7a;
+}
+
+.text-maincolor {
+  color: #ffc22c;
+}

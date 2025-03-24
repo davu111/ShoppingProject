@@ -19,11 +19,11 @@ function Navbar({ isCollapsed, setIsCollapsed }) {
   const [active, setActive] = useState(location.pathname);
 
   return (
-    <nav className="flex flex-col items-center h-screen bg-gradient-to-b from-indigo-700 to-indigo-900 py-8">
-      <div className="font-mogra underline text-[clamp(1rem,2vw,2.5rem)] text-white flex flex-row items-center">
+    <nav className="flex flex-col items-center h-screen bg-maincolor py-8 border-2 border-black">
+      <div className="font-mogra underline text-[clamp(1rem,2vw,2.5rem)] text-black flex flex-row items-center">
         <FontAwesomeIcon
           icon={faBars}
-          className="mr-2 p-2 rounded-lg bg-indigo-600 cursor-pointer hover:bg-indigo-500"
+          className="mr-2 p-2 rounded-lg bg-[#ffdb7a] cursor-pointer hover:bg-[#fddf8d]"
           onClick={() => setIsCollapsed(!isCollapsed)}
         />
         <span
@@ -34,24 +34,26 @@ function Navbar({ isCollapsed, setIsCollapsed }) {
           ShopNow
         </span>
       </div>
-      <div className="relative w-full text-[clamp(1rem,1.5vw,2.5rem)] flex flex-col  font-bold text-white mt-20">
-        <motion.div
-          layoutId="activeTab"
-          className="absolute bottom-0 w-full bg-white"
-          initial={{ top: 0, height: "25%" }} // Mặc định ở Home
-          animate={{
-            top: `${paths.indexOf(active) * 25}%`, // Dịch chuyển ngang theo vị trí tab
-            height: "25%", // Chia đều cho 4 tab
-          }}
-          transition={{ duration: 0.2, ease: "easeInOut" }}
-        />
+      <div className="relative w-full text-[clamp(1rem,1.5vw,2.5rem)] flex flex-col  font-bold text-black mt-20">
+        {paths.includes(active) && (
+          <motion.div
+            layoutId="activeTab"
+            className="absolute bottom-0 w-full bg-black"
+            initial={{ top: 0, height: "25%" }} // Mặc định ở Home
+            animate={{
+              top: `${paths.indexOf(active) * 25}%`, // Dịch chuyển ngang theo vị trí tab
+              height: "25%", // Chia đều cho 4 tab
+            }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+          />
+        )}
         {paths.map((path) => (
           <Link
             key={path}
             to={path}
             onClick={() => setActive(path)}
             className={`relative w-full px-8 py-4  cursor-pointer text-center ${
-              active === path ? "text-indigo-600 " : "hover:bg-indigo-600 "
+              active === path ? "text-maincolor " : "hover:bg-[#ffdb7a] "
             }`}
           >
             <span className={`relative z-10 flex items-center gap-2 `}>
@@ -83,8 +85,8 @@ function Navbar({ isCollapsed, setIsCollapsed }) {
           </Link>
         ))}
       </div>
-      <div className=" w-full text-[clamp(1rem,1.5vw,2.5rem)] font-bold text-white mt-auto">
-        <div className="px-8 py-4 hover:bg-indigo-600 cursor-pointer">
+      <div className=" w-full text-[clamp(1rem,1.5vw,2.5rem)] font-bold text-black mt-auto">
+        <div className="px-8 py-4 hover:bg-[#ffdb7a]  cursor-pointer">
           <FontAwesomeIcon icon={faSignOut} className="mr-2"></FontAwesomeIcon>
           <span
             className={`transition-all duration-300 ${
