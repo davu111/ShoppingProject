@@ -15,7 +15,7 @@ function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(6);
-  const [itemId, setItemId] = useState(0);
+  const [item, setItem] = useState(null);
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -75,12 +75,12 @@ function Home() {
         >
           {currentItems.map((item) => (
             <Card
-              key={item.id}
+              key={item._id}
               item={item}
               className="item-card"
               onClick={() => {
                 setIsOpen(true);
-                setItemId(item.id);
+                setItem(item);
               }}
             />
           ))}
@@ -95,9 +95,7 @@ function Home() {
           onClick={handleNextPage}
         />
       </div>
-      {isOpen && (
-        <Item item={Items[itemId - 1]} onClose={() => setIsOpen(false)} />
-      )}
+      {isOpen && <Item item={item} onClose={() => setIsOpen(false)} />}
     </div>
   );
 }

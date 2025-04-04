@@ -1,162 +1,182 @@
 [
     {
-      "id": 1,
+      "_id": 1,
       "title": "Product 1",
       "price": "$10.00",
       "detail": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       "img": "img1.jpg",
+      "quantity": 2,
       "amount": 100
     },
     {
-      "id": 2,
+      "_id": 2,
       "title": "Product 2",
       "price": "$20",
       "detail": "Detail about Product 2",
       "img": "img2.jpg",
+      "quantity": 2,
       "amount": 90
     },
     {
-      "id": 3,
+      "_id": 1243821489234,
       "title": "Product 3",
       "price": "$30",
       "detail": "Detail about Product 3",
       "img": "img3.jpg",
+      "quantity": 2,
       "amount": 80
     },
     {
-      "id": 4,
+      "_id": "53b1c579bdf3de74f76bdac9",
       "title": "Product 4",
       "price": "$40",
       "detail": "Detail about Product 4",
       "img": "img4.jpg",
+      "quantity": 2,
       "amount": 70
     },
     {
-      "id": 5,
+      "_id": 5,
       "title": "Product 5",
       "price": "$50",
       "detail": "Detail about Product 5",
       "img": "img5.jpg",
+      "quantity": 2,
       "amount": 60
     },
     {
-      "id": 6,
+      "_id": 6,
       "title": "Product 6",
       "price": "$60",
       "detail": "Detail about Product 6",
       "img": "img6.jpg",
+      "quantity": 2,
       "amount": 50
     },
     {
-      "id": 7,
+      "_id": 7,
       "title": "Product 7",
       "price": "$70",
       "detail": "Detail about Product 7",
       "img": "img7.jpg",
+      "quantity": 2,
       "amount": 40
     },
     {
-      "id": 8,
+      "_id": 8,
       "title": "Product 8",
       "price": "$80",
       "detail": "Detail about Product 8",
       "img": "img8.jpg",
+      "quantity": 2,
       "amount": 30
     },
     {
-      "id": 9,
+      "_id": 9,
       "title": "Product 9",
       "price": "$90",
       "detail": "Detail about Product 9",
       "img": "img9.jpg",
+      "quantity": 2,
       "amount": 20
     },
     {
-      "id": 10,
+      "_id": 10,
       "title": "Product 10",
       "price": "$100",
       "detail": "Detail about Product 10",
       "img": "img10.jpg",
+      "quantity": 2,
       "amount": 10
     },
     {
-      "id": 11,
+      "_id": 11,
       "title": "Product 11",
       "price": "$110",
       "detail": "Detail about Product 11",
       "img": "img11.jpg",
+      "quantity": 2,
       "amount": 95
     },
     {
-      "id": 12,
+      "_id": 12,
       "title": "Product 12",
       "price": "$120",
       "detail": "Detail about Product 12",
       "img": "img12.jpg",
+      "quantity": 2,
       "amount": 85
     },
     {
-      "id": 13,
+      "_id": 13,
       "title": "Product 13",
       "price": "$130",
       "detail": "Detail about Product 13",
       "img": "img13.jpg",
+      "quantity": 2,
       "amount": 75
     },
     {
-      "id": 14,
+      "_id": 14,
       "title": "Product 14",
       "price": "$140",
       "detail": "Detail about Product 14",
       "img": "img14.jpg",
+      "quantity": 2,
       "amount": 65
     },
     {
-      "id": 15,
+      "_id": 15,
       "title": "Product 15",
       "price": "$150",
       "detail": "Detail about Product 15",
       "img": "img15.jpg",
+      "quantity": 2,
       "amount": 55
     },
     {
-      "id": 16,
+      "_id": 16,
       "title": "Product 16",
       "price": "$160",
       "detail": "Detail about Product 16",
       "img": "img16.jpg",
+      "quantity": 2,
       "amount": 45
     },
     {
-      "id": 17,
+      "_id": 17,
       "title": "Product 17",
       "price": "$170",
       "detail": "Detail about Product 17",
       "img": "img17.jpg",
+      "quantity": 2,
       "amount": 35
     },
     {
-      "id": 18,
+      "_id": 18,
       "title": "Product 18",
       "price": "$180",
       "detail": "Detail about Product 18",
       "img": "img18.jpg",
+      "quantity": 2,
       "amount": 25
     },
     {
-      "id": 19,
+      "_id": 19,
       "title": "Product 19",
       "price": "$190",
       "detail": "Detail about Product 19",
       "img": "img19.jpg",
+      "quantity": 2,
       "amount": 15
     },
     {
-      "id": 20,
+      "_id": 20,
       "title": "Product 20",
       "price": "$200",
       "detail": "Detail about Product 20",
       "img": "img20.jpg",
+      "quantity": 2,
       "amount": 5
     }
   ]
