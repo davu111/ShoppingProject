@@ -1,17 +1,20 @@
 import { useState, useEffect, useRef } from "react";
+import axios from "axios";
 
 import Panner from "../assets/Panner.png";
 import Card from "../components/Card";
 import Item from "../components/Item";
 
-import Items from "../data/Items.json";
+// import Items from "../data/Items.json";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSquareCaretLeft,
   faSquareCaretRight,
 } from "@fortawesome/free-regular-svg-icons";
+const URL = "http://localhost:3000";
 
 function Home() {
+  const [Items, setItems] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(6);
@@ -42,6 +45,13 @@ function Home() {
     window.addEventListener("resize", updatePageSize);
     return () => window.removeEventListener("resize", updatePageSize);
   }, []);
+
+  useEffect(() => {
+    axios
+      .get(`${URL}/products/getProducts`)
+      .then((res) => setItems(res.data))
+      .catch((err) => console.log(err));
+  }, [Items]);
 
   const totalPages = Math.ceil(Items.length / pageSize);
   const startIndex = (currentPage - 1) * pageSize;

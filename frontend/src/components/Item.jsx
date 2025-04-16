@@ -29,8 +29,6 @@ function Item({ onClose, item }) {
 
           <img src={panner} />
 
-          <h3 className="text-lg font-semibold mt-4">{item.price}</h3>
-
           <p>{item.detail}</p>
         </div>
         <button
@@ -60,15 +58,19 @@ function Item({ onClose, item }) {
             </button>
           </div>
           <div className="font-bold text-2xl">
-            {`$${quantity * parseFloat(item.price.replace("$", ""))}`}
+            {`$${(quantity * item.price).toFixed(2)}`}
           </div>
           <div className="font-bold ">
-            <button className="border-2 mr-1 border-black bg-white text-black px-4 py-2 cursor-pointer hover:border-black/50 hover:text-black/50">
+            <Link
+              to={{ pathname: "cart" }}
+              className="border-2 mr-1 border-black bg-white text-black px-4 py-2 cursor-pointer hover:border-black/50 hover:text-black/50"
+            >
               Add to Cart
-            </button>
+            </Link>
             <Link
               to={{ pathname: "home/buynow" }}
               className="border-2 border-black text-black bg-[#ffc22c]  px-4 py-2 cursor-pointer hover:bg-black hover:text-[#ffc22c]"
+              state={{ products: [{ ...item, quantity: quantity }] }}
             >
               Buy Now
             </Link>

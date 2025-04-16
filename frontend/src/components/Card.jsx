@@ -8,7 +8,7 @@ function Card({ item, onClick }) {
     >
       <img src={panner} />
       <div className="font-bold ml-2">{item.title}</div>
-      <div className="ml-2">{item.price}</div>
+      <div className="ml-2">${item.price.toFixed(2)}</div>
     </div>
   );
 }

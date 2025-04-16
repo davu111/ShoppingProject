@@ -1,63 +1,65 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 
-import lists from "../data/Items.json";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import Header from "../components/Header";
-import SmallCard from "../components/SmallCard";
-import Item from "../components/Item";
+
+import panner from "../assets/panner.jpg";
 
 function BuyNow() {
-  const [isCheckAll, setIsCheckAll] = useState(false);
-  const [checkedItems, setCheckedItems] = useState({});
-  const [isItemOpen, setIsItemOpen] = useState(null);
-
-  const handleCheckAll = () => {
-    const newValue = !isCheckAll;
-    setIsCheckAll(newValue);
-
-    const updatedChecks = {};
-    lists.forEach((item) => (updatedChecks[item._id] = newValue));
-    setCheckedItems(updatedChecks);
-  };
-
-  const handleItemCheck = (id, checked) => {
-    const updated = { ...checkedItems, [id]: checked };
-    setCheckedItems(updated);
-
-    const allChecked = lists.every((item) => updated[item._id]);
-    setIsCheckAll(allChecked);
-  };
+  const location = useLocation();
+  const { products } = location.state;
 
   return (
     <>
-      <Header name="Check out" />
+      <Header name="Payment" />
       <div className="grid grid-cols-11">
-        <div className="flex items-center col-start-3 col-span-7 h-[clamp(1rem,5vw,5rem)] border-2 border-black mr-4 mb-4 p-4">
-          <input
-            type="checkbox"
-            className="h-[clamp(1rem,2vw,2.5rem)] w-[clamp(1rem,2vw,2.5rem)] cursor-pointer  mr-2"
-            checked={isCheckAll}
-            onChange={handleCheckAll}
-          ></input>
-          <div className="font-bold">Check all</div>
-          {console.log(checkedItems)}
-        </div>
         <div className="col-start-3 col-span-7 overflow-auto max-h-[62vh] ">
-          {lists.map((item) => (
-            <SmallCard
-              item={item}
-              key={item._id}
-              checked={!!checkedItems[item._id]}
-              onCheck={(checked) => handleItemCheck(item._id, checked)}
-              onClick={() => setIsItemOpen(item)}
-            />
+          {console.log(products)}
+          {products.map((product) => (
+            <PayItem key={product._id || product.id} item={product} />
           ))}
         </div>
-        {isItemOpen && (
-          <Item item={isItemOpen} onClose={() => setIsItemOpen(null)} />
-        )}
       </div>
     </>
+  );
+}
+
+function PayItem({ item }) {
+  const [quantity, setQuantity] = useState(item.quantity || 1);
+
+  return (
+    <div className="flex p-4 border-2 border-black hover:shadow-lg mb-1 items-center">
+      <div className="h-[clamp(1rem,6vw,5rem)] w-[clamp(1rem,6vw,5rem)] border-1 border-gray-500">
+        <img src={panner} />
+      </div>
+      <div className="flex flex-col ml-2">
+        <div className="font-bold">{item.title}</div>
+        <div className="flex flex-row text-center text-xs">
+          <div
+            className="border-1 border-gray-500 p-1 cursor-pointer"
+            onClick={() => setQuantity(Math.max(1, quantity - 1))}
+          >
+            <FontAwesomeIcon icon={faMinus} />
+          </div>
+          <input
+            className="border-y-1 border-gray-500 px-1 flex items-center justify-center font-bold focus:outline-none w-6 text-center"
+            value={quantity}
+            onChange={(e) => {
+              setQuantity(Math.min(item.amount, Math.max(1, e.target.value)));
+            }}
+          ></input>
+          <div
+            className="border-1 border-gray-500 p-1 cursor-pointer"
+            onClick={() => setQuantity(Math.min(100, quantity + 1))}
+          >
+            <FontAwesomeIcon icon={faPlus} />
+          </div>
+        </div>
+      </div>
+      <div className="ml-2">${(quantity * item.price).toFixed(2)}</div>
+    </div>
   );
 }
 
