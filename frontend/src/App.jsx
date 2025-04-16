@@ -11,8 +11,11 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Cart from "./pages/Cart";
 import Status from "./pages/Status";
+import Profile from "./pages/Profile";
 
 import BuyNow from "./pages/BuyNow";
+import SignUp from "./components/SignUp";
+import SignIn from "./components/SignIn";
 
 function App() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -37,8 +40,10 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/status" element={<Status />} />
-            <Route path="/profile" element={<h1>Profile</h1>} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/home/buynow" element={<BuyNow />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/signin" element={<SignIn />} />
           </Routes>
         </div>
       </div>

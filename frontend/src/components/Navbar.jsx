@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../index.css";
 import {
@@ -17,6 +17,26 @@ const paths = ["/", "/cart", "/status", "/profile"];
 function Navbar({ isCollapsed, setIsCollapsed }) {
   const location = useLocation();
   const [active, setActive] = useState(location.pathname);
+  const navigate = useNavigate();
+
+  const handleNavClick = (path) => {
+    if (path === "/profile") {
+      const user = localStorage.getItem("user");
+      if (!user) {
+        navigate("/signin");
+      } else {
+        navigate("/profile");
+      }
+    } else {
+      navigate(path);
+    }
+    setActive(path);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/");
+  };
 
   return (
     <nav className="flex flex-col items-center h-screen bg-maincolor py-8 border-2 border-black">
@@ -48,10 +68,9 @@ function Navbar({ isCollapsed, setIsCollapsed }) {
           />
         )}
         {paths.map((path) => (
-          <Link
+          <div
             key={path}
-            to={path}
-            onClick={() => setActive(path)}
+            onClick={() => handleNavClick(path)}
             className={`relative w-full px-8 py-4  cursor-pointer text-center ${
               active === path ? "text-maincolor " : "hover:bg-[#ffdb7a] "
             }`}
@@ -82,11 +101,14 @@ function Navbar({ isCollapsed, setIsCollapsed }) {
                   : "Profile"}
               </span>
             </span>
-          </Link>
+          </div>
         ))}
       </div>
       <div className=" w-full text-[clamp(1rem,1.5vw,2.5rem)] font-bold text-black mt-auto">
-        <div className="px-8 py-4 hover:bg-[#ffdb7a]  cursor-pointer">
+        <div
+          className="px-8 py-4 hover:bg-[#ffdb7a]  cursor-pointer"
+          onClick={handleLogout}
+        >
           <FontAwesomeIcon icon={faSignOut} className="mr-2"></FontAwesomeIcon>
           <span
             className={`transition-all duration-300 ${
