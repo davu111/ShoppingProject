@@ -51,7 +51,7 @@ function Home() {
       .get(`${URL}/products/getProducts`)
       .then((res) => setItems(res.data))
       .catch((err) => console.log(err));
-  }, [Items]);
+  }, []);
 
   const totalPages = Math.ceil(Items.length / pageSize);
   const startIndex = (currentPage - 1) * pageSize;

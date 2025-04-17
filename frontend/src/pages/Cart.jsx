@@ -1,31 +1,52 @@
-import { use, useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-import lists from "../data/Items.json";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import Header from "../components/Header";
 import SmallCard from "../components/SmallCard";
-// import Item from "../components/Item";
+import SubCard from "../components/SubCard";
 const URL = "http://localhost:3000";
 
 function Cart() {
-  const [item, setItem] = useState([]);
+  const navigate = useNavigate();
+  const [lists, setLists] = useState([]);
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [checkedItems, setCheckedItems] = useState({});
   const [isItemOpen, setIsItemOpen] = useState(null);
   const [itemQuantities, setItemQuantities] = useState({});
+  const [isEditing, setIsEditing] = useState(false);
+  const [isChange, setIsChange] = useState(false);
 
   useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (!storedUser || !storedUser._id) navigate("/signin");
+  }, []);
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (!storedUser || !storedUser._id) return;
+
     axios
-      .get(`${URL}/carts/getCarts`)
+      .get(`${URL}/carts/getCart/${storedUser._id}`)
       .then((response) => {
-        setItem(response.data);
+        const products = response.data || [];
+        setLists(products);
+
+        const quantites = {};
+        products.forEach((item) => {
+          quantites[item._id] = item.quantity;
+        });
+        setItemQuantities(quantites);
+        setIsChange(false);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, []);
+  }, [isChange]);
 
   const handleCheckAll = () => {
     const newValue = !isCheckAll;
@@ -51,6 +72,44 @@ function Cart() {
     }));
   };
 
+  const handleCancelEditing = () => {
+    setIsEditing(false);
+    const products = lists;
+    const quantites = {};
+    products.forEach((item) => {
+      quantites[item._id] = item.quantity;
+    });
+    setItemQuantities(quantites);
+  };
+
+  const handleDoneEditing = () => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    axios
+      .put(`${URL}/carts/updateQuantity/${storedUser._id}`, itemQuantities)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error("Error updating quantity:", error);
+      });
+    setIsChange(true);
+    setIsEditing(false);
+  };
+
+  const handleDelete = (id) => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    axios
+      .delete(`${URL}/carts/deleteProduct/${storedUser._id}/${id}`)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error("Error deleting product:", error);
+      });
+    setIsChange(true);
+  };
+
   const quantity = Object.values(checkedItems).reduce(
     (total, checked) => (checked ? total + 1 : total),
     0
@@ -66,16 +125,38 @@ function Cart() {
       <Header name="Check out" />
       <div className="grid grid-cols-11">
         <div className="flex items-center col-start-3 col-span-7 h-[clamp(1rem,5vw,5rem)] border-2 border-black mr-4 mb-4 p-4">
-          <input
-            type="checkbox"
-            className="h-[clamp(1rem,2vw,2.5rem)] w-[clamp(1rem,2vw,2.5rem)] cursor-pointer  mr-2"
-            checked={isCheckAll}
-            onChange={handleCheckAll}
-          ></input>
-          <div className="font-bold">Check all</div>
+          <div className="w-full flex justify-between">
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                className="h-[clamp(1rem,2vw,2.5rem)] w-[clamp(1rem,2vw,2.5rem)] cursor-pointer  mr-2"
+                checked={isCheckAll}
+                onChange={handleCheckAll}
+              ></input>
+              <div className="font-bold">Check all</div>
+            </div>
+            {isEditing && (
+              <div className="flex items-center flex-row-reverse gap-4 font-bold">
+                <div
+                  className="flex items-center gap-1 text-green-700 cursor-pointer"
+                  onClick={() => handleDoneEditing()}
+                >
+                  <FontAwesomeIcon icon={faCheck} />
+                  <p>Done</p>
+                </div>
+                <div
+                  className="flex items-center gap-1 text-red-700 cursor-pointer"
+                  onClick={() => handleCancelEditing()}
+                >
+                  <FontAwesomeIcon icon={faXmark} />
+                  <p>Cancel</p>
+                </div>
+              </div>
+            )}
+          </div>
           {/* {console.log(checkedItems)} */}
         </div>
-        {console.log(itemQuantities)}
+        {/* {console.log(itemQuantities)} */}
         <div className="col-start-3 col-span-7 overflow-auto max-h-[62vh] ">
           {lists.map((item) => (
             <SmallCard
@@ -88,11 +169,13 @@ function Cart() {
               onQuantityChange={(quantity) =>
                 handleQuantityChange(item._id, quantity)
               }
+              setIsEditing={setIsEditing}
+              onDelete={() => handleDelete(item._id)}
             />
           ))}
         </div>
         {isItemOpen && (
-          <Item item={isItemOpen} onClose={() => setIsItemOpen(null)} />
+          <SubCard item={isItemOpen} onClose={() => setIsItemOpen(null)} />
         )}
         <div className="col-start-3 col-span-7 flex items-center justify-between font-bold mt-4">
           <div className="text-2xl flex flex-row">
@@ -101,7 +184,7 @@ function Cart() {
           </div>
           <div className="text-2xl">${total.toFixed(2)}</div>
           <Link
-            to="/home/buynow"
+            to="/cart/buynow"
             className="border-2 border-black text-black bg-[#ffc22c]  px-4 py-2 cursor-pointer hover:bg-black hover:text-[#ffc22c]"
             state={{ products: lists.filter((item) => checkedItems[item._id]) }}
           >

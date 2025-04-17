@@ -4,9 +4,27 @@ import { motion } from "framer-motion";
 import panner from "../assets/panner.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+
+const URL = "http://localhost:3000";
 
 function Item({ onClose, item }) {
   const [quantity, setQuantity] = useState(1);
+
+  const handleAddToCart = (item, quantity) => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    axios
+      .post(`${URL}/carts/addProduct/${storedUser._id}`, {
+        product_id: item._id,
+        quantity: quantity,
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   return (
     <motion.div
@@ -62,13 +80,16 @@ function Item({ onClose, item }) {
           </div>
           <div className="font-bold ">
             <Link
-              to={{ pathname: "cart" }}
+              onClick={() => {
+                handleAddToCart(item, quantity);
+                onClose();
+              }}
               className="border-2 mr-1 border-black bg-white text-black px-4 py-2 cursor-pointer hover:border-black/50 hover:text-black/50"
             >
               Add to Cart
             </Link>
             <Link
-              to={{ pathname: "home/buynow" }}
+              to={{ pathname: "cart/buynow" }}
               className="border-2 border-black text-black bg-[#ffc22c]  px-4 py-2 cursor-pointer hover:bg-black hover:text-[#ffc22c]"
               state={{ products: [{ ...item, quantity: quantity }] }}
             >
