@@ -1,13 +1,6 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import panner from "../assets/panner.jpg";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMinus, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 function PopUp({ title, message, onConfirm, onClose }) {
-  const [quantity, setQuantity] = useState(1);
-
   return (
     <motion.div
       className="fixed inset-0 flex items-center justify-center bg-black/90 backdrop-blur-sm z-10"

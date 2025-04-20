@@ -2,6 +2,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
+  Outlet,
   Navigate,
 } from "react-router-dom";
 import { useState } from "react";
@@ -10,12 +11,17 @@ import "./App.css";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Cart from "./pages/Cart";
-import Status from "./pages/Status";
+// import Status from "./pages/Status";
+import StatusAdmin from "./pages/StatusAdmin";
 import Profile from "./pages/Profile";
 
 import BuyNow from "./pages/BuyNow";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
+
+import Confirm from "./pages/Confirm";
+import Shipping from "./pages/Shipping";
+import Completed from "./pages/Completed";
 
 function App() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -39,11 +45,18 @@ function App() {
 
             <Route path="/" element={<Home />} />
             <Route path="/cart" element={<Cart />} />
-            <Route path="/status" element={<Status />} />
+            <Route
+              path="/status"
+              element={<Navigate to="/status/confirm" replace />}
+            />
             <Route path="/profile" element={<Profile />} />
             <Route path="/cart/buynow" element={<BuyNow />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
+            <Route path="/status_admin" element={<StatusAdmin />} />
+            <Route path="/status/confirm" element={<Confirm />} />
+            <Route path="/status/shipping" element={<Shipping />} />
+            <Route path="/status/completed" element={<Completed />} />
           </Routes>
         </div>
       </div>

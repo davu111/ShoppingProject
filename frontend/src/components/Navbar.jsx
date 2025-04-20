@@ -20,16 +20,24 @@ function Navbar({ isCollapsed, setIsCollapsed }) {
   const navigate = useNavigate();
 
   const handleNavClick = (path) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
     if (path === "/profile") {
-      const user = localStorage.getItem("user");
       if (!user) {
         navigate("/signin");
       } else {
         navigate("/profile");
       }
+    } else if (path === "/status") {
+      if (user?.role === "admin") {
+        navigate("/status_admin");
+      } else {
+        navigate("/status/confirm");
+      }
     } else {
       navigate(path);
     }
+
     setActive(path);
   };
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,16 +12,31 @@ import Header from "../components/Header";
 
 import panner from "../assets/panner.jpg";
 
+const URL = "http://localhost:3000";
+
 function BuyNow() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { products } = location.state;
   const [items, setItems] = useState(products);
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState("COD");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
   const methods = ["COD", "Credit"];
+  const [error, setError] = useState("");
 
   const quantity = products.reduce((total) => total + 1, 0);
   const [total, setTotal] = useState(0);
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  if (!storedUser || !storedUser._id) navigate("/signin");
+
+  useEffect(() => {
+    axios.get(`${URL}/users/getUser/${storedUser._id}`).then((response) => {
+      setPhone(response.data.phone);
+      setAddress(response.data.address);
+    });
+  }, []);
 
   useEffect(() => {
     setTotal(
@@ -28,12 +44,41 @@ function BuyNow() {
     );
   }, [items]);
 
+  const handleOrder = () => {
+    if (!phone.trim() || !address.trim()) {
+      setError("Please enter your phone number and address.");
+      return;
+    }
+    setError("");
+    const products = [];
+    items.forEach((item) =>
+      products.push({
+        product: item._id,
+        quantity: item.quantity,
+      })
+    );
+
+    axios
+      .post(`${URL}/orders/createOrder/${storedUser._id}`, {
+        products: products,
+        payment: selected,
+        total: total,
+        phone: phone,
+        address: address,
+      })
+      .then((response) => {
+        console.log(response.data);
+        navigate("/status/confirm");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <>
       <Header name="Payment" />
       <div className="grid grid-cols-11">
-        {console.log(items)}
-
         <div className="col-start-3 col-span-7 overflow-auto max-h-[62vh] ">
           {items.map((item) => (
             <PayItem
@@ -44,7 +89,30 @@ function BuyNow() {
             />
           ))}
         </div>
-        <div className="flex items-center col-start-3 col-span-7 h-[clamp(1rem,5vw,5rem)] border-2 border-black mr-4 my-4 p-4">
+        <div className="flex flex-col col-start-3 col-span-7 border-2 border-black mr-4 my-4 p-4">
+          {error && (
+            <div className="text-red-500 font-semibold mb-2">{error}</div>
+          )}
+          <div className="w-full flex justify-between font-bold">
+            <div>Phone</div>
+            <input
+              type="number"
+              value={phone || ""}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Enter your phones"
+              className="w-1/2 p-1 outline-none text-right"
+            ></input>
+          </div>
+          <div className="w-full flex justify-between font-bold">
+            <div>Address</div>
+            <input
+              type="text"
+              value={address || ""}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Enter your adress"
+              className="w-1/2 p-1 outline-none text-right"
+            ></input>
+          </div>{" "}
           <div className="w-full flex justify-between font-bold">
             <div>Payment method</div>
             <div>
@@ -80,7 +148,10 @@ function BuyNow() {
             <div className="text-lg">({quantity})</div>
           </div>
           <div className="text-2xl">${total.toFixed(2)}</div>
-          <div className="border-2 border-black text-black bg-[#ffc22c]  px-4 py-2 cursor-pointer hover:bg-black hover:text-[#ffc22c]">
+          <div
+            className="border-2 border-black text-black bg-[#ffc22c]  px-4 py-2 cursor-pointer hover:bg-black hover:text-[#ffc22c]"
+            onClick={() => handleOrder()}
+          >
             BuyNow
           </div>
         </div>
