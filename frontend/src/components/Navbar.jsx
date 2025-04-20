@@ -48,7 +48,7 @@ function Navbar({ isCollapsed, setIsCollapsed }) {
 
   return (
     <nav className="flex flex-col items-center h-screen bg-maincolor py-8 border-2 border-black">
-      <div className="font-mogra underline text-[clamp(1rem,2vw,2.5rem)] text-black flex flex-row items-center">
+      <div className="font-mogra underline text-[clamp(0.1rem,2vw,2.5rem)] text-black flex flex-row items-center">
         <FontAwesomeIcon
           icon={faBars}
           className="mr-2 p-2 rounded-lg bg-[#ffdb7a] cursor-pointer hover:bg-[#fddf8d]"
@@ -62,7 +62,7 @@ function Navbar({ isCollapsed, setIsCollapsed }) {
           ShopNow
         </span>
       </div>
-      <div className="relative w-full text-[clamp(1rem,1.5vw,2.5rem)] flex flex-col  font-bold text-black mt-20">
+      <div className="relative w-full text-[clamp(0.1rem,1.5vw,2.5rem)] flex flex-col  font-bold text-black mt-20">
         {paths.includes(active) && (
           <motion.div
             layoutId="activeTab"
@@ -72,7 +72,7 @@ function Navbar({ isCollapsed, setIsCollapsed }) {
               top: `${paths.indexOf(active) * 25}%`, // Dịch chuyển ngang theo vị trí tab
               height: "25%", // Chia đều cho 4 tab
             }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
+            transition={{ duration: 0.1, ease: "easeInOut" }}
           />
         )}
         {paths.map((path) => (
@@ -83,7 +83,11 @@ function Navbar({ isCollapsed, setIsCollapsed }) {
               active === path ? "text-maincolor " : "hover:bg-[#ffdb7a] "
             }`}
           >
-            <span className={`relative z-10 flex items-center gap-2 `}>
+            <span
+              className={`relative z-10 flex items-center ${
+                isCollapsed ? "justify-center" : "gap-2"
+              } `}
+            >
               <FontAwesomeIcon
                 icon={
                   path === "/"
@@ -112,18 +116,20 @@ function Navbar({ isCollapsed, setIsCollapsed }) {
           </div>
         ))}
       </div>
-      <div className=" w-full text-[clamp(1rem,1.5vw,2.5rem)] font-bold text-black mt-auto">
+      <div className=" w-full text-[clamp(0.1rem,1.5vw,2.5rem)] font-bold text-black mt-auto">
         <div
-          className="px-8 py-4 hover:bg-[#ffdb7a]  cursor-pointer"
+          className={`flex items-center px-8 py-4 hover:bg-[#ffdb7a]  cursor-pointer ${
+            isCollapsed ? "justify-center" : "gap-2"
+          }`}
           onClick={handleLogout}
         >
-          <FontAwesomeIcon icon={faSignOut} className="mr-2"></FontAwesomeIcon>
+          <FontAwesomeIcon icon={faSignOut}></FontAwesomeIcon>
           <span
             className={`transition-all duration-300 ${
               isCollapsed ? "hidden" : ""
             }`}
           >
-            Log out
+            Exit
           </span>
         </div>
       </div>

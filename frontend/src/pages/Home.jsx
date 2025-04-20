@@ -27,14 +27,14 @@ function Home() {
         const containerWidth = containerRef.current.clientWidth;
         const itemWidth = 200; // Ước tính kích thước mỗi card (bao gồm margin, padding)
         const itemsPerRow = Math.floor(containerWidth / itemWidth);
-        let rowsPerPage = 3; // Số hàng có thể hiển thị
-        if (window.innerWidth >= 768) {
-          rowsPerPage = 5;
-        }
+        let rowsPerPage = 10;
 
-        if (window.innerWidth >= 1080) {
-          rowsPerPage = 3;
-        }
+        if (window.innerWidth >= 475) rowsPerPage = 8; // sm
+        if (window.innerWidth >= 600) rowsPerPage = 6; // sm
+        if (window.innerWidth >= 655) rowsPerPage = 3; // sm
+        if (window.innerWidth >= 768) rowsPerPage = 4; // md-sm
+        if (window.innerWidth >= 895) rowsPerPage = 3; // md-lg
+        if (window.innerWidth >= 1024) rowsPerPage = 3; // lg
 
         setPageSize(itemsPerRow * rowsPerPage);
       }
@@ -81,7 +81,7 @@ function Home() {
 
         <div
           ref={containerRef}
-          className="flex-1 m-4 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4"
+          className="flex-1 m-4 grid  grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
         >
           {currentItems.map((item) => (
             <Card

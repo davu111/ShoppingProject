@@ -107,6 +107,28 @@ class CartController {
       next(error);
     }
   }
+
+  // [DELETE] /carts/:user_id (delete many products in cart)
+  async deleteMany(req, res, next) {
+    try {
+      const userId = req.params.id;
+      const productIds = req.body.productIds;
+
+      const cart = await Cart.findOne({ user: userId });
+
+      if (!cart) return res.status(404).json({ message: "Cart not found" });
+
+      cart.products = cart.products.filter((item) => {
+        return !productIds.includes(item.product.toString());
+      });
+
+      await cart.save();
+
+      res.json(cart);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new CartController();

@@ -44,6 +44,14 @@ function BuyNow() {
     );
   }, [items]);
 
+  const deleteProduct = () => {
+    const productIds = products.map((item) => item._id);
+    axios
+      .post(`${URL}/carts/deleteMany/${storedUser._id}`, { productIds })
+      .then((res) => console.log(res.data))
+      .catch((err) => console.error(err));
+  };
+
   const handleOrder = () => {
     if (!phone.trim() || !address.trim()) {
       setError("Please enter your phone number and address.");
@@ -57,7 +65,6 @@ function BuyNow() {
         quantity: item.quantity,
       })
     );
-
     axios
       .post(`${URL}/orders/createOrder/${storedUser._id}`, {
         products: products,
@@ -73,6 +80,8 @@ function BuyNow() {
       .catch((error) => {
         console.error(error);
       });
+
+    deleteProduct();
   };
 
   return (
