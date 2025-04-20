@@ -11,11 +11,15 @@ class OrderController {
     }
   }
 
-  // [GET] /order/:id
+  // [GET] /order/:id (status)
   async getOrder(req, res, next) {
     try {
       const userId = req.params.id;
-      const orders = await Order.find({ user: userId }).sort({ date: -1 });
+      const status = req.query.status;
+
+      const orders = await Order.find({ user: userId, status }).sort({
+        date: -1,
+      });
       res.json(orders);
     } catch (error) {
       next(error);

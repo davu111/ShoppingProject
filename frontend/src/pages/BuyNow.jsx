@@ -89,7 +89,7 @@ function BuyNow() {
             />
           ))}
         </div>
-        <div className="flex flex-col col-start-3 col-span-7 border-2 border-black mr-4 my-4 p-4">
+        <div className="flex flex-col col-start-3 col-span-7 border-2 border-black mt-2 p-4">
           {error && (
             <div className="text-red-500 font-semibold mb-2">{error}</div>
           )}
@@ -142,7 +142,7 @@ function BuyNow() {
             </div>
           </div>
         </div>
-        <div className="col-start-3 col-span-7 flex items-center justify-between font-bold mt-4">
+        <div className="col-start-3 col-span-7 flex items-center justify-between font-bold mt-2">
           <div className="text-2xl flex flex-row">
             Total
             <div className="text-lg">({quantity})</div>

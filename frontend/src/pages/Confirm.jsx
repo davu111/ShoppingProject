@@ -16,11 +16,15 @@ function Confirm() {
   const storedUser = JSON.parse(localStorage.getItem("user"));
   if (!storedUser || !storedUser._id) navigate("/signin");
 
-  useEffect(() => {
+  const fetchOrders = () => {
     axios
-      .get(`${URL}/orders/getOrder/${storedUser._id}`)
+      .get(`${URL}/orders/getOrder/${storedUser._id}?status=confirm`)
       .then((response) => setOrders(response.data))
       .catch((error) => console.error(error));
+  };
+
+  useEffect(() => {
+    fetchOrders();
   }, []);
 
   const handleCancel = (orderId) => {
@@ -29,10 +33,7 @@ function Confirm() {
       .then((response) => {
         console.log(response.data);
         setIsOpen(false);
-        axios
-          .get(`${URL}/orders/getOrder/${storedUser._id}`)
-          .then((response) => setOrders(response.data))
-          .catch((error) => console.error(error));
+        fetchOrders();
       })
       .catch((error) => {
         console.error(error);
@@ -42,32 +43,38 @@ function Confirm() {
   return (
     <>
       <HeaderBar title="Confirm" />
-      <div className="grid grid-cols-11 overflow-auto max-h-[62vh]">
-        {orders.map((order) => (
-          <div
-            key={order._id}
-            className="col-start-3 col-span-7 bg-black/90 rounded-2xl p-4 mb-4"
-          >
-            <div className="flex flex-col text-white text-xs mb-2">
-              <div>Order ID: {order._id}</div>
-              <div>Total: ${order.total}</div>
-              <div>Order Date: {order.date.split("T")[0]}</div>
-            </div>
-            <div className="flex flex-col gap-1">
-              {order.products.map((item) => (
-                <ConfirmCard key={item.product} item={item} />
-              ))}
-            </div>
-            <button
-              className="float-right bg-red-600 text-white text-xs px-4 py-2 rounded-2xl font-bold mt-2 hover:bg-red-400 cursor-pointer"
-              onClick={() => {
-                setOrderId(order._id), setIsOpen(true);
-              }}
+      <div className="grid grid-cols-11 overflow-auto max-h-[80vh]">
+        {orders.length > 0 ? (
+          orders.map((order) => (
+            <div
+              key={order._id}
+              className="col-start-3 col-span-7 bg-black/90 rounded-2xl p-4 mb-4"
             >
-              Cancel
-            </button>
+              <div className="flex flex-col text-white text-xs mb-2">
+                <div>Order ID: {order._id}</div>
+                <div>Total: ${order.total}</div>
+                <div>Order Date: {order.date.split("T")[0]}</div>
+              </div>
+              <div className="flex flex-col gap-1">
+                {order.products.map((item) => (
+                  <ConfirmCard key={item.product} item={item} />
+                ))}
+              </div>
+              <button
+                className="float-right bg-red-600 text-white text-xs px-4 py-2 rounded-2xl font-bold mt-2 hover:bg-red-400 cursor-pointer"
+                onClick={() => {
+                  setOrderId(order._id), setIsOpen(true);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          ))
+        ) : (
+          <div className="col-start-6 col-span-3 font-bold">
+            No Confirm Order
           </div>
-        ))}
+        )}
         {isOpen && (
           <PopUp
             title="Cancel Order"

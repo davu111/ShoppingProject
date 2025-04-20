@@ -15,7 +15,7 @@ function Shipping() {
 
   const fetchOrders = () => {
     axios
-      .get(`${URL}/orders/getOrder/${storedUser._id}?status=shipping`)
+      .get(`${URL}/orders/getOrder/${storedUser._id}?status=reject`)
       .then((response) => setOrders(response.data))
       .catch((error) => console.error(error));
   };
@@ -24,10 +24,11 @@ function Shipping() {
     fetchOrders();
   }, []);
 
-  const handleReceived = (orderId) => {
+  const handleOrder = (orderId) => {
     axios
       .put(`${URL}/orders/updateOrder/${storedUser._id}/${orderId}`, {
-        status: "completed",
+        status: "confirm",
+        date: new Date(),
       })
       .then((response) => {
         console.log(response.data);
@@ -40,7 +41,7 @@ function Shipping() {
 
   return (
     <>
-      <HeaderBar title="Shipping" />
+      <HeaderBar title="Reject" />
       <div className="grid grid-cols-11 overflow-auto max-h-[80vh]">
         {orders.length > 0 ? (
           orders.map((order) => (
@@ -59,16 +60,16 @@ function Shipping() {
                 ))}
               </div>
               <button
-                className="float-right bg-green-600 text-white text-xs px-4 py-2 rounded-2xl font-bold mt-2 hover:bg-green-500 cursor-pointer"
-                onClick={() => handleReceived(order._id)}
+                className="float-right bg-yellow-600 text-white text-xs px-4 py-2 rounded-2xl font-bold mt-2 hover:bg-yellow-500 cursor-pointer"
+                onClick={() => handleOrder(order._id)}
               >
-                Received
+                Order again
               </button>
             </div>
           ))
         ) : (
           <div className="col-start-6 col-span-3 font-bold">
-            No Shipping Order
+            No Reject Order
           </div>
         )}
       </div>

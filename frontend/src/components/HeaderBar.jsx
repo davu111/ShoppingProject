@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 import Header from "./Header";
 
-const header = ["Confirm", "Shipping", "Completed"];
+const header = ["Confirm", "Shipping", "Completed", "Reject"];
 
 function HeaderBar({ title }) {
   const navigate = useNavigate();

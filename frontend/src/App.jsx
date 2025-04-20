@@ -22,6 +22,7 @@ import SignIn from "./components/SignIn";
 import Confirm from "./pages/Confirm";
 import Shipping from "./pages/Shipping";
 import Completed from "./pages/Completed";
+import Reject from "./pages/Reject";
 
 function App() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -57,6 +58,7 @@ function App() {
             <Route path="/status/confirm" element={<Confirm />} />
             <Route path="/status/shipping" element={<Shipping />} />
             <Route path="/status/completed" element={<Completed />} />
+            <Route path="/status/reject" element={<Reject />} />
           </Routes>
         </div>
       </div>
