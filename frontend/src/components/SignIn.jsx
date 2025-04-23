@@ -50,7 +50,7 @@ function SignIn() {
       <div className="grid grid-cols-11 p-6">
         <form
           onSubmit={handleSubmit}
-          className="col-span-5 col-start-4 bg-white shadow-md rounded-2xl p-6 mt-8 space-y-4"
+          className="col-span-11 md:col-span-5 col-start-1 md:col-start-4 bg-white shadow-md rounded-2xl p-6 mt-8 space-y-4"
         >
           <h2 className="text-2xl font-bold text-center">Sign In</h2>
 

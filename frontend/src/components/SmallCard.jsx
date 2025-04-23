@@ -28,7 +28,7 @@ function SmallCard({
         className="h-[clamp(1rem,6vw,5rem)] w-[clamp(1rem,6vw,5rem)] border-1 border-gray-500"
         onClick={onClick}
       >
-        <img src={panner} />
+        <img src={item.img} />
       </div>
       <div className="flex flex-col ml-2">
         <div className="font-bold" onClick={onClick}>

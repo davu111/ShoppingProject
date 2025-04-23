@@ -20,10 +20,10 @@ function SubCard({ onClose, item }) {
         transition={{ duration: 0.3, ease: "easeOut" }}
         onClick={(e) => e.stopPropagation()} // Ngăn đóng khi click vào nội dung
       >
-        <div className="overflow-auto max-h-[60vh]">
+        <div className="overflow-auto max-h-[60vh] no-scrollbar">
           <h2 className="text-xl font-bold mb-4">{item.title}</h2>
 
-          <img src={panner} />
+          <img src={item.img} />
 
           <p>{item.detail}</p>
         </div>

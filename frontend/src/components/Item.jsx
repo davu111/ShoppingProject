@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import panner from "../assets/panner.jpg";
@@ -10,9 +11,16 @@ const URL = "http://localhost:3000";
 
 function Item({ onClose, item }) {
   const [quantity, setQuantity] = useState(1);
+  const navigate = useNavigate();
 
   const handleAddToCart = (item, quantity) => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    if (!storedUser || !storedUser._id) {
+      console.log("User not logged in");
+      navigate("/signin");
+      return;
+    }
     axios
       .post(`${URL}/carts/addProduct/${storedUser._id}`, {
         product_id: item._id,
@@ -42,10 +50,10 @@ function Item({ onClose, item }) {
         transition={{ duration: 0.3, ease: "easeOut" }}
         onClick={(e) => e.stopPropagation()} // Ngăn đóng khi click vào nội dung
       >
-        <div className="overflow-auto max-h-[60vh]">
+        <div className="overflow-auto max-h-[60vh] pb-[100px] no-scrollbar">
           <h2 className="text-xl font-bold mb-4">{item.title}</h2>
 
-          <img src={panner} />
+          <img src={item.img} />
 
           <p>{item.detail}</p>
         </div>
@@ -55,10 +63,10 @@ function Item({ onClose, item }) {
         >
           <FontAwesomeIcon icon={faXmark} />
         </button>
-        <div className="pb-[60px]"></div>
+        <div className="pb-[100px]"></div>
 
-        <div className="absolute bottom-0 left-0 right-0 bg-white shadow-md border-t p-4 flex items-center justify-between">
-          <div className="font-bold text-xs">
+        <div className="absolute bottom-0 left-0 right-0 bg-white shadow-md border-t p-4 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
+          <div className="font-bold text-xs flex items-center">
             <button
               className="border-y-2 border-l-2 border-black px-4 py-2 cursor-pointer bg-[#ffc22c] hover:bg-[#fddf8d]"
               onClick={() => setQuantity(Math.max(quantity - 1, 1))}
@@ -66,7 +74,7 @@ function Item({ onClose, item }) {
               <FontAwesomeIcon icon={faMinus} />
             </button>
 
-            <span className="border-2 border-black px-4 py-2 ">{quantity}</span>
+            <span className="border-2 border-black px-4 py-2">{quantity}</span>
 
             <button
               className="border-y-2 border-r-2 border-black px-4 py-2 cursor-pointer bg-[#ffc22c] hover:bg-[#fddf8d]"
@@ -75,22 +83,24 @@ function Item({ onClose, item }) {
               <FontAwesomeIcon icon={faPlus} />
             </button>
           </div>
-          <div className="font-bold text-2xl">
+
+          <div className="font-bold text-xl md:text-2xl text-center">
             {`$${(quantity * item.price).toFixed(2)}`}
           </div>
-          <div className="font-bold ">
-            <Link
+
+          <div className="font-bold flex flex-col md:flex-row gap-2 md:gap-0 text-center">
+            <button
               onClick={() => {
                 handleAddToCart(item, quantity);
                 onClose();
               }}
-              className="border-2 mr-1 border-black bg-white text-black px-4 py-2 cursor-pointer hover:border-black/50 hover:text-black/50"
+              className="border-2 border-black bg-white text-black px-4 py-2 cursor-pointer hover:border-black/50 hover:text-black/50 mr-2"
             >
               Add to Cart
-            </Link>
+            </button>
             <Link
               to={{ pathname: "cart/buynow" }}
-              className="border-2 border-black text-black bg-[#ffc22c]  px-4 py-2 cursor-pointer hover:bg-black hover:text-[#ffc22c]"
+              className="border-2 border-black text-black bg-[#ffc22c] px-4 py-2 cursor-pointer hover:bg-black hover:text-[#ffc22c]"
               state={{ products: [{ ...item, quantity: quantity }] }}
             >
               Buy Now

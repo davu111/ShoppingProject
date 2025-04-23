@@ -68,7 +68,7 @@ function Shipping() {
             </div>
           ))
         ) : (
-          <div className="col-start-6 col-span-3 font-bold">
+          <div className="col-start-5 col-span-4 text-xs md:text-xl font-bold">
             No Completed Order
           </div>
         )}

@@ -14,7 +14,6 @@ function Confirm() {
   const [isOpen, setIsOpen] = useState(false);
 
   const storedUser = JSON.parse(localStorage.getItem("user"));
-  if (!storedUser || !storedUser._id) navigate("/signin");
 
   const fetchOrders = () => {
     axios
@@ -24,6 +23,7 @@ function Confirm() {
   };
 
   useEffect(() => {
+    if (!storedUser || !storedUser._id) return navigate("/signin");
     fetchOrders();
   }, []);
 
@@ -71,7 +71,7 @@ function Confirm() {
             </div>
           ))
         ) : (
-          <div className="col-start-6 col-span-3 font-bold">
+          <div className="col-start-5 col-span-4 font-bold">
             No Confirm Order
           </div>
         )}

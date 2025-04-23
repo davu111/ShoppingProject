@@ -6,6 +6,9 @@ import {
 } from "react-router-dom";
 import { useState } from "react";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
+
 import "./App.css";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
@@ -25,20 +28,32 @@ import Reject from "./pages/Reject";
 
 function App() {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [showMobileNav, setShowMobileNav] = useState(false);
+
   return (
     <Router>
-      <div className="grid grid-cols-12 transition-all duration-300">
+      {/* Navbar toggle for mobile */}
+      <div className="md:hidden fixed top-2 left-2 z-50">
+        <FontAwesomeIcon
+          icon={faBars}
+          className="text-[clamp(0.1rem,3vw,2.5rem)] p-[clamp(0.1rem,1vw,10rem)] rounded cursor-pointer"
+          onClick={() => setShowMobileNav(true)}
+        />
+      </div>
+
+      {/* Navbar for desktop */}
+      <div className="grid grid-cols-12 transition-all duration-300 min-h-screen">
         <div
-          className={`transition-all duration-300 ${
+          className={`transition-all duration-300 hidden md:block ${
             isCollapsed ? "col-span-1" : "col-span-2"
-          } `}
+          }`}
         >
           <Navbar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
         </div>
         <div
-          className={`transition-all duration-300 ${
-            isCollapsed ? "col-span-11" : "col-span-10"
-          } `}
+          className={`transition-all duration-300 col-span-12 ${
+            isCollapsed ? "md:col-span-11" : "md:col-span-10"
+          }`}
         >
           <Routes>
             {/* <Route path="*" element={<Navigate to="/" />} /> */}
@@ -61,6 +76,16 @@ function App() {
           </Routes>
         </div>
       </div>
+      {/* Navbar overlay for mobile */}
+      {showMobileNav && (
+        <div className="fixed inset-0 z-50 bg-white md:hidden">
+          <Navbar
+            isCollapsed={false}
+            setIsCollapsed={() => {}}
+            onCloseMobileNav={() => setShowMobileNav(false)}
+          />
+        </div>
+      )}
     </Router>
   );
 }

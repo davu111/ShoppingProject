@@ -21,31 +21,30 @@ function Cart() {
   const [isEditing, setIsEditing] = useState(false);
   const [isChange, setIsChange] = useState(false);
 
+  const storedUser = JSON.parse(localStorage.getItem("user"));
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (!storedUser || !storedUser._id) navigate("/signin");
+    if (!storedUser || !storedUser._id) return navigate("/signin");
   }, []);
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (!storedUser || !storedUser._id) return;
+    if (storedUser) {
+      axios
+        .get(`${URL}/carts/getCart/${storedUser._id}`)
+        .then((response) => {
+          const products = response.data || [];
+          setLists(products);
 
-    axios
-      .get(`${URL}/carts/getCart/${storedUser._id}`)
-      .then((response) => {
-        const products = response.data || [];
-        setLists(products);
-
-        const quantites = {};
-        products.forEach((item) => {
-          quantites[item._id] = item.quantity;
+          const quantites = {};
+          products.forEach((item) => {
+            quantites[item._id] = item.quantity;
+          });
+          setItemQuantities(quantites);
+          setIsChange(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
         });
-        setItemQuantities(quantites);
-        setIsChange(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
+    }
   }, [isChange]);
 
   const handleCheckAll = () => {
@@ -177,15 +176,21 @@ function Cart() {
         {isItemOpen && (
           <SubCard item={isItemOpen} onClose={() => setIsItemOpen(null)} />
         )}
-        <div className="col-start-3 col-span-7 flex items-center justify-between font-bold mt-4">
+        <div className="col-start-3 col-span-7 flex items-center justify-between font-bold mt-8">
           <div className="text-2xl flex flex-row">
             Total
             <div className="text-lg">({quantity})</div>
           </div>
           <div className="text-2xl">${total.toFixed(2)}</div>
           <Link
-            to="/cart/buynow"
-            className="border-2 border-black text-black bg-[#ffc22c]  px-4 py-2 cursor-pointer hover:bg-black hover:text-[#ffc22c]"
+            to={total === 0 ? "#" : "/cart/buynow"} // tránh điều hướng nếu rỗng
+            className={`border-2 border-black px-4 py-2 mr-2
+              ${
+                total === 0
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-[#ffc22c] text-black hover:bg-black hover:text-[#ffc22c] cursor-pointer"
+              }
+            `}
             state={{ products: lists.filter((item) => checkedItems[item._id]) }}
           >
             BuyNow

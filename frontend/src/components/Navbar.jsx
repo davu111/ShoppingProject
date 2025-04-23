@@ -14,55 +14,55 @@ import { motion } from "framer-motion";
 
 const paths = ["/", "/cart", "/status", "/profile"];
 
-function Navbar({ isCollapsed, setIsCollapsed }) {
+function Navbar({ isCollapsed, setIsCollapsed, onCloseMobileNav }) {
   const location = useLocation();
-  const [active, setActive] = useState(location.pathname);
   const navigate = useNavigate();
+  const [active, setActive] = useState(location.pathname);
 
   const handleNavClick = (path) => {
     const user = JSON.parse(localStorage.getItem("user"));
 
     if (path === "/profile") {
-      if (!user) {
-        navigate("/signin");
-      } else {
-        navigate("/profile");
-      }
+      !user ? navigate("/signin") : navigate("/profile");
     } else if (path === "/status") {
-      if (user?.role === "admin") {
-        navigate("/status_admin");
-      } else {
-        navigate("/status/confirm");
-      }
+      user?.role === "admin"
+        ? navigate("/status_admin")
+        : navigate("/status/confirm");
     } else {
       navigate(path);
     }
 
     setActive(path);
+    onCloseMobileNav?.();
   };
 
   const handleLogout = () => {
     localStorage.removeItem("user");
     navigate("/");
+    onCloseMobileNav?.();
   };
 
   return (
-    <nav className="flex flex-col items-center h-screen bg-maincolor py-8 border-2 border-black">
-      <div className="font-mogra underline text-[clamp(0.1rem,2vw,2.5rem)] text-black flex flex-row items-center">
+    <nav className="flex flex-col items-center min-h-screen bg-maincolor py-8 border-2 border-black">
+      <div className="font-mogra underline text-3xl md:text-[clamp(0.1rem,2vw,2.5rem)] text-black flex flex-row items-center">
         <FontAwesomeIcon
           icon={faBars}
           className="mr-2 p-2 rounded-lg bg-[#ffdb7a] cursor-pointer hover:bg-[#fddf8d]"
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={() => {
+            setIsCollapsed(!isCollapsed);
+            onCloseMobileNav?.();
+          }}
         />
         <span
-          className={`transition-all duration-300 ${
+          className={`${
             isCollapsed ? "hidden" : "block"
-          }`}
+          } transition-all duration-300`}
         >
           ShopNow
         </span>
       </div>
-      <div className="relative w-full text-[clamp(0.1rem,1.5vw,2.5rem)] flex flex-col  font-bold text-black mt-20">
+
+      <div className="relative w-full text-3xl md:text-[clamp(0.1rem,1.5vw,2.5rem)] flex flex-col font-bold text-black mt-20">
         {paths.includes(active) && (
           <motion.div
             layoutId="activeTab"
@@ -79,14 +79,14 @@ function Navbar({ isCollapsed, setIsCollapsed }) {
           <div
             key={path}
             onClick={() => handleNavClick(path)}
-            className={`relative w-full px-8 py-4  cursor-pointer text-center ${
-              active === path ? "text-maincolor " : "hover:bg-[#ffdb7a] "
+            className={`relative w-full py-8 px-8 md:py-4 cursor-pointer text-center ${
+              active === path ? "text-maincolor" : "hover:bg-[#ffdb7a]"
             }`}
           >
             <span
               className={`relative z-10 flex items-center ${
                 isCollapsed ? "justify-center" : "gap-2"
-              } `}
+              }`}
             >
               <FontAwesomeIcon
                 icon={
@@ -98,11 +98,11 @@ function Navbar({ isCollapsed, setIsCollapsed }) {
                     ? faBox
                     : faUser
                 }
-              ></FontAwesomeIcon>
+              />
               <span
-                className={`transition-all duration-300 ${
+                className={`${
                   isCollapsed ? "hidden" : ""
-                }`}
+                } transition-all duration-300`}
               >
                 {path === "/"
                   ? "Home"
@@ -116,18 +116,19 @@ function Navbar({ isCollapsed, setIsCollapsed }) {
           </div>
         ))}
       </div>
-      <div className=" w-full text-[clamp(0.1rem,1.5vw,2.5rem)] font-bold text-black mt-auto">
+
+      <div className="w-full text-3xl md:text-[clamp(0.1rem,1.5vw,2.5rem)] font-bold text-black mt-auto">
         <div
-          className={`flex items-center px-8 py-4 hover:bg-[#ffdb7a]  cursor-pointer ${
+          className={`flex items-center px-8 py-4 hover:bg-[#ffdb7a] cursor-pointer ${
             isCollapsed ? "justify-center" : "gap-2"
           }`}
           onClick={handleLogout}
         >
-          <FontAwesomeIcon icon={faSignOut}></FontAwesomeIcon>
+          <FontAwesomeIcon icon={faSignOut} />
           <span
-            className={`transition-all duration-300 ${
+            className={`${
               isCollapsed ? "hidden" : ""
-            }`}
+            } transition-all duration-300`}
           >
             Exit
           </span>
