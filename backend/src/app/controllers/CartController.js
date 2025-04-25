@@ -12,7 +12,11 @@ class CartController {
 
       if (!cart) return res.status(202).json([]);
 
-      const productsWithQuantity = cart.products.map((item) => {
+      const sortedProducts = [...cart.products].sort(
+        (a, b) => new Date(b.addedAt) - new Date(a.addedAt)
+      );
+
+      const productsWithQuantity = sortedProducts.map((item) => {
         const product = item.product.toObject(); // chuyển về object JS thường
         product.quantity = item.quantity; // thêm quantity
         return product;
@@ -45,8 +49,13 @@ class CartController {
 
       if (existingProduct) {
         existingProduct.quantity += quantity;
+        existingProduct.addedAt = new Date();
       } else {
-        cart.products.push({ product: productId, quantity: quantity });
+        cart.products.push({
+          product: productId,
+          quantity: quantity,
+          addedAt: new Date(),
+        });
       }
 
       await cart.save();
@@ -69,8 +78,9 @@ class CartController {
 
       cart.products.forEach((item) => {
         const productId = item.product.toString();
-        if (quantites[productId]) {
+        if (quantites[productId] && item.quantity !== quantites[productId]) {
           item.quantity = quantites[productId];
+          item.addedAt = new Date();
         }
       });
 

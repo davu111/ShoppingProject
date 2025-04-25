@@ -44,7 +44,7 @@ function Navbar({ isCollapsed, setIsCollapsed, onCloseMobileNav }) {
 
   return (
     <nav className="flex flex-col items-center min-h-screen bg-maincolor py-8 border-2 border-black">
-      <div className="font-mogra underline text-3xl md:text-[clamp(0.1rem,2vw,2.5rem)] text-black flex flex-row items-center">
+      <div className="font-mogra underline text-2xl md:text-[clamp(0.1rem,2vw,2.5rem)] text-black flex flex-row items-center">
         <FontAwesomeIcon
           icon={faBars}
           className="mr-2 p-2 rounded-lg bg-[#ffdb7a] cursor-pointer hover:bg-[#fddf8d]"
@@ -62,7 +62,7 @@ function Navbar({ isCollapsed, setIsCollapsed, onCloseMobileNav }) {
         </span>
       </div>
 
-      <div className="relative w-full text-3xl md:text-[clamp(0.1rem,1.5vw,2.5rem)] flex flex-col font-bold text-black mt-20">
+      <div className="relative w-full text-2xl md:text-[clamp(0.1rem,1.5vw,2.5rem)] flex flex-col font-bold text-black mt-20">
         {paths.includes(active) && (
           <motion.div
             layoutId="activeTab"
@@ -117,7 +117,7 @@ function Navbar({ isCollapsed, setIsCollapsed, onCloseMobileNav }) {
         ))}
       </div>
 
-      <div className="w-full text-3xl md:text-[clamp(0.1rem,1.5vw,2.5rem)] font-bold text-black mt-auto">
+      <div className="w-full text-2xl md:text-[clamp(0.1rem,1.5vw,2.5rem)] font-bold text-black mt-auto">
         <div
           className={`flex items-center px-8 py-4 hover:bg-[#ffdb7a] cursor-pointer ${
             isCollapsed ? "justify-center" : "gap-2"

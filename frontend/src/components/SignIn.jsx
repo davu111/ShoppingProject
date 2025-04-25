@@ -34,10 +34,11 @@ function SignIn() {
       const response = await axios.post(`${URL}/users/login`, formData);
       const userData = response.data;
 
-      localStorage.setItem("user", JSON.stringify(userData));
-
-      setError("");
-      navigate("/profile");
+      if (userData) {
+        localStorage.setItem("user", JSON.stringify(userData));
+        setError("");
+        navigate("/profile");
+      } else setError("User not found. Please try again.");
     } catch (err) {
       console.error("Login failed:", err);
       setError("Invalid credentials. Please try again.");

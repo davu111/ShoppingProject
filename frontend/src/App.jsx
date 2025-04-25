@@ -78,12 +78,14 @@ function App() {
       </div>
       {/* Navbar overlay for mobile */}
       {showMobileNav && (
-        <div className="fixed inset-0 z-50 bg-white md:hidden">
-          <Navbar
-            isCollapsed={false}
-            setIsCollapsed={() => {}}
-            onCloseMobileNav={() => setShowMobileNav(false)}
-          />
+        <div className="fixed inset-0 z-50 bg-black/50">
+          <div className="w-1/2 h-full">
+            <Navbar
+              isCollapsed={false}
+              setIsCollapsed={() => {}}
+              onCloseMobileNav={() => setShowMobileNav(false)}
+            />
+          </div>
         </div>
       )}
     </Router>

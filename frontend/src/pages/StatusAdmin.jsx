@@ -35,7 +35,7 @@ function StatusAdmin() {
   return (
     <>
       <Header name="Status" />
-      <div className="max-h-[70vh] overflow-y-auto m-4 bg-white no-scrollbar">
+      <div className="max-h-[82vh] overflow-y-auto m-4 bg-white no-scrollbar">
         <table className="w-full text-sm text-left bg-white text-black border border-black">
           <thead className="sticky top-0 text-xs uppercase bg-maincolor text-black">
             <tr>
@@ -71,7 +71,7 @@ function StatusAdmin() {
                       : order.address
                     : "N/A"}
                 </td>
-                <td className="px-4 py-2">${order.total}</td>
+                <td className="px-4 py-2">${order.total.toFixed(2)}</td>
                 <td className="px-4 py-2">{order.payment}</td>
                 <td className="px-4 py-2 capitalize">
                   <OrderStatus order={order} fetchOrders={fetchOrders} />
@@ -109,25 +109,29 @@ function OrderStatus({ order, fetchOrders }) {
   return (
     <div>
       {status === "confirm" && (
-        <div className="flex items-center flex-row-reverse gap-4 font-bold">
+        <div className="flex items-center flex-row-reverse gap-4 font-bold ">
           <div
-            className="flex items-center gap-1 text-green-700 cursor-pointer"
+            className=" text-green-700 cursor-pointer"
             onClick={() => handleAccept()}
           >
             <FontAwesomeIcon icon={faCheck} />
           </div>
           <div
-            className="flex items-center gap-1 text-red-700 cursor-pointer"
+            className=" text-red-700 cursor-pointer"
             onClick={() => handleReject()}
           >
             <FontAwesomeIcon icon={faXmark} />
           </div>
         </div>
       )}
-      {status === "shipping" && <div className="text-gray-700">Shipping</div>}
-      {status === "reject" && <div className="text-red-700">Rejected</div>}
+      {status === "shipping" && (
+        <div className="text-gray-700 flex flex-row-reverse">Shipping</div>
+      )}
+      {status === "reject" && (
+        <div className="text-red-700 flex flex-row-reverse">Rejected</div>
+      )}
       {status === "completed" && (
-        <div className="text-green-700">Completed</div>
+        <div className="text-green-700 flex flex-row-reverse">Completed</div>
       )}
     </div>
   );

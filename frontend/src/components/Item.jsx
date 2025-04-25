@@ -4,13 +4,19 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import panner from "../assets/panner.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMinus, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMinus,
+  faPlus,
+  faXmark,
+  faCheck,
+} from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 
 const URL = "http://localhost:3000";
 
 function Item({ onClose, item }) {
   const [quantity, setQuantity] = useState(1);
+  const [addedToCart, setAddedToCart] = useState(false);
   const navigate = useNavigate();
 
   const handleAddToCart = (item, quantity) => {
@@ -59,7 +65,7 @@ function Item({ onClose, item }) {
         </div>
         <button
           onClick={onClose}
-          className="absolute top-0 right-0 px-4 py-2 text-2xl text-gray-300 hover:text-black hover:bg-red-500 "
+          className="absolute top-0 right-0 px-4 py-2 text-2xl text-gray-300 hover:text-black hover:bg-red-500 rounded-tr-lg"
         >
           <FontAwesomeIcon icon={faXmark} />
         </button>
@@ -88,15 +94,28 @@ function Item({ onClose, item }) {
             {`$${(quantity * item.price).toFixed(2)}`}
           </div>
 
-          <div className="font-bold flex flex-col md:flex-row gap-2 md:gap-0 text-center">
+          <div className="font-bold flex flex-col md:flex-row gap-2 text-center">
             <button
               onClick={() => {
                 handleAddToCart(item, quantity);
-                onClose();
+                setAddedToCart(true);
+                setTimeout(() => {
+                  onClose();
+                }, 1000);
               }}
-              className="border-2 border-black bg-white text-black px-4 py-2 cursor-pointer hover:border-black/50 hover:text-black/50 mr-2"
+              className="border-2 border-black bg-white text-black px-4 py-2 cursor-pointer hover:border-black/50 hover:text-black/50"
             >
-              Add to Cart
+              {addedToCart ? (
+                <div>
+                  <FontAwesomeIcon
+                    className="font-bold text-green-700 mr-2"
+                    icon={faCheck}
+                  />
+                  Added
+                </div>
+              ) : (
+                "Add to Cart"
+              )}
             </button>
             <Link
               to={{ pathname: "cart/buynow" }}

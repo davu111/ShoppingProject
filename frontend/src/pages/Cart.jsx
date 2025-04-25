@@ -123,7 +123,7 @@ function Cart() {
     <>
       <Header name="Check out" />
       <div className="grid grid-cols-11">
-        <div className="flex items-center col-start-3 col-span-7 h-[clamp(1rem,5vw,5rem)] border-2 border-black mr-4 mb-4 p-4">
+        <div className="flex items-center col-start-3 col-span-7 h-[clamp(1rem,5vw,5rem)] border-2 border-black mb-4 p-4">
           <div className="w-full flex justify-between">
             <div className="flex items-center">
               <input
