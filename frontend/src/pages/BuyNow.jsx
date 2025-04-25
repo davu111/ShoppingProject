@@ -29,9 +29,9 @@ function BuyNow() {
   const quantity = products.reduce((total) => total + 1, 0);
   const [total, setTotal] = useState(0);
   const storedUser = JSON.parse(localStorage.getItem("user"));
-  if (!storedUser || !storedUser._id) navigate("/signin");
 
   useEffect(() => {
+    if (!storedUser || !storedUser._id) return navigate("/signin");
     axios.get(`${URL}/users/getUser/${storedUser._id}`).then((response) => {
       setPhone(response.data.phone);
       setAddress(response.data.address);
