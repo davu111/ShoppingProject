@@ -26,6 +26,59 @@ class OrderController {
     }
   }
 
+  // [GET] /orders/statusStats
+  async getOrderStatusStats(req, res, next) {
+    try {
+      const stats = await Order.aggregate([
+        {
+          $group: {
+            _id: "$status",
+            count: { $sum: 1 },
+          },
+        },
+      ]);
+      res.json(stats);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // [GET] /orders/topProducts
+  async getTopProducts(req, res, next) {
+    try {
+      const topProducts = await Order.aggregate([
+        { $unwind: "$products" },
+        {
+          $group: {
+            _id: "$products.product",
+            totalSold: { $sum: "$products.quantity" },
+          },
+        },
+        {
+          $lookup: {
+            from: "products", // tên collection sản phẩm
+            localField: "_id",
+            foreignField: "_id",
+            as: "product",
+          },
+        },
+        { $unwind: "$product" },
+        { $sort: { totalSold: -1 } },
+        { $limit: 10 },
+        {
+          $project: {
+            _id: 0,
+            name: "$product.title",
+            totalSold: 1,
+          },
+        },
+      ]);
+      res.json(topProducts);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   // [POST] /orders/:userId (create new order)
   async createOrder(req, res, next) {
     try {

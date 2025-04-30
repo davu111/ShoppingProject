@@ -5,6 +5,7 @@ import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import Header from "../components/Header";
 import OrderItem from "../components/OrderItem";
+import StatusAdminHeader from "../components/StatusAdminHeader";
 
 const URL = "http://localhost:3000";
 const cols = [
@@ -34,8 +35,8 @@ function StatusAdmin() {
 
   return (
     <>
-      <Header name="Status" />
-      <div className="max-h-[82vh] overflow-y-auto m-4 bg-white no-scrollbar">
+      <StatusAdminHeader title="Table" />
+      <div className="max-h-[75vh] overflow-y-auto m-4 bg-white no-scrollbar">
         <table className="w-full text-sm text-left bg-white text-black border border-black">
           <thead className="sticky top-0 text-xs uppercase bg-maincolor text-black">
             <tr>
@@ -66,8 +67,8 @@ function StatusAdmin() {
                   title={order.address}
                 >
                   {order.address
-                    ? order.address > 100
-                      ? `${order.address.slice(0, 100)}...`
+                    ? order.address.length > 25
+                      ? `${order.address.slice(0, 25)}...`
                       : order.address
                     : "N/A"}
                 </td>

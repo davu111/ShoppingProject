@@ -26,6 +26,8 @@ import Shipping from "./pages/Shipping";
 import Completed from "./pages/Completed";
 import Reject from "./pages/Reject";
 
+import StatusAnalysis from "./pages/StatusAnalysis";
+
 function App() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showMobileNav, setShowMobileNav] = useState(false);
@@ -68,7 +70,12 @@ function App() {
             <Route path="/cart/buynow" element={<BuyNow />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
-            <Route path="/status_admin" element={<StatusAdmin />} />
+            <Route
+              path="/status_admin"
+              element={<Navigate to="/status_admin/table" />}
+            />
+            <Route path="/status_admin/table" element={<StatusAdmin />} />
+            <Route path="/status_admin/analysis" element={<StatusAnalysis />} />
             <Route path="/status/confirm" element={<Confirm />} />
             <Route path="/status/shipping" element={<Shipping />} />
             <Route path="/status/completed" element={<Completed />} />
