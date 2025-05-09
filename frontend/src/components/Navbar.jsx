@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../index.css";
 import {
@@ -17,10 +18,11 @@ const paths = ["/", "/cart", "/status", "/profile"];
 function Navbar({ isCollapsed, setIsCollapsed, onCloseMobileNav }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [active, setActive] = useState(location.pathname);
 
   const handleNavClick = (path) => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    // const user = JSON.parse(localStorage.getItem("user"));
 
     if (path === "/profile") {
       !user ? navigate("/signin") : navigate("/profile");
@@ -36,9 +38,10 @@ function Navbar({ isCollapsed, setIsCollapsed, onCloseMobileNav }) {
     onCloseMobileNav?.();
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/");
+  const handleLogout = async () => {
+    await logout();
+    navigate("/signin");
+
     onCloseMobileNav?.();
   };
 

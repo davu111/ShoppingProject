@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import axios from "../contexts/axios";
+import { useAuth } from "../contexts/AuthContext";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
@@ -12,13 +14,15 @@ function Profile() {
   const [user, setUser] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [tempUser, setTempUser] = useState({});
+  const navigate = useNavigate();
+  const { user: storedUser } = useAuth();
+  console.log(storedUser);
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (!storedUser || !storedUser._id) return;
-
+    // const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (!storedUser || !storedUser._id) return navigate("/signin");
     axios
-      .get(`${URL}/users/getUser/${storedUser._id}`)
+      .get(`/users/getUser/${storedUser._id}`)
       .then((response) => {
         setUser(response.data);
       })
@@ -35,9 +39,9 @@ function Profile() {
   };
 
   const handleSave = () => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
+    // const storedUser = JSON.parse(localStorage.getItem("user"));
     axios
-      .put(`${URL}/users/updateUser/${storedUser._id}`, tempUser)
+      .put(`/users/updateUser/${storedUser._id}`, tempUser)
       .then((response) => {
         setUser(response.data);
         setIsEditing(false);

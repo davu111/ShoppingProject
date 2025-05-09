@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,15 +22,16 @@ function Cart() {
   const [isEditing, setIsEditing] = useState(false);
   const [isChange, setIsChange] = useState(false);
 
-  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const { user } = useAuth();
   useEffect(() => {
-    if (!storedUser || !storedUser._id) return navigate("/signin");
+    console.log(user);
+    if (!user || !user._id) return navigate("/signin");
   }, []);
 
   useEffect(() => {
-    if (storedUser) {
+    if (user) {
       axios
-        .get(`${URL}/carts/getCart/${storedUser._id}`)
+        .get(`${URL}/carts/getCart/${user._id}`)
         .then((response) => {
           const products = response.data || [];
           setLists(products);
@@ -82,10 +84,8 @@ function Cart() {
   };
 
   const handleDoneEditing = () => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-
     axios
-      .put(`${URL}/carts/updateQuantity/${storedUser._id}`, itemQuantities)
+      .put(`${URL}/carts/updateQuantity/${user._id}`, itemQuantities)
       .then((response) => {
         console.log(response.data);
       })
@@ -97,9 +97,8 @@ function Cart() {
   };
 
   const handleDelete = (id) => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
     axios
-      .delete(`${URL}/carts/deleteProduct/${storedUser._id}/${id}`)
+      .delete(`${URL}/carts/deleteProduct/${user._id}/${id}`)
       .then((response) => {
         console.log(response.data);
       })

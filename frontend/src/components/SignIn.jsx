@@ -1,12 +1,15 @@
 import { useState } from "react";
-import axios from "axios";
+import axios from "../contexts/axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 import Header from "./Header";
 
 const URL = "http://localhost:3000";
 
 function SignIn() {
+  const { setUser } = useAuth(); // gọi hook
+
   const [formData, setFormData] = useState({
     account: "",
     password: "",
@@ -31,16 +34,20 @@ function SignIn() {
     }
 
     try {
-      const response = await axios.post(`${URL}/users/login`, formData);
-      const userData = response.data;
+      const response = await axios.post(`/users/login`, formData);
+      const userData = response.data.message;
+      console.log(response);
 
-      if (userData) {
-        localStorage.setItem("user", JSON.stringify(userData));
+      if (userData === "Login successful") {
+        // localStorage.setItem("user", JSON.stringify(userData));
+        // const res = await axios.get(`/users/profile`);
+        console.log(res.data);
+        setUser(res.data); // cập nhật user vào AuthContext
         setError("");
-        navigate("/profile");
+        navigate("/profile", { replace: true });
       } else setError("User not found. Please try again.");
     } catch (err) {
-      console.error("Login failed:", err);
+      console.error("Login failed:", err.response?.status, err.response?.data);
       setError("Invalid credentials. Please try again.");
     }
   };

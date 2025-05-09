@@ -46,7 +46,7 @@ function SignUp() {
       .post(`${URL}/users/createUser`, formData)
       .then((response) => {
         console.log(response.data);
-        localStorage.setItem("user", JSON.stringify(response.data));
+        // localStorage.setItem("user", JSON.stringify(response.data));
 
         navigate("/profile");
       })
