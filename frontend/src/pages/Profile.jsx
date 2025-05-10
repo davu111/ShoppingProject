@@ -14,9 +14,10 @@ function Profile() {
   const [user, setUser] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [tempUser, setTempUser] = useState({});
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const { user: storedUser } = useAuth();
-  console.log(storedUser);
+  // console.log(storedUser);
 
   useEffect(() => {
     // const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -40,6 +41,16 @@ function Profile() {
 
   const handleSave = () => {
     // const storedUser = JSON.parse(localStorage.getItem("user"));
+    console.log(tempUser);
+    if (tempUser.phone.length != 10) {
+      setError("Please enter a valid 10 digit phone number");
+      return;
+    }
+    if (/[^a-zA-Z0-9\s]/.test(tempUser.address)) {
+      setError("Please enter an address without special characters.");
+      return;
+    }
+    setError("");
     axios
       .put(`/users/updateUser/${storedUser._id}`, tempUser)
       .then((response) => {
@@ -58,7 +69,7 @@ function Profile() {
 
   return (
     <>
-      <Header name="Profile" />
+      <Header name="Profile" noMargin />
       <div className="grid grid-cols-11 p-6">
         <div className="col-span-7 col-start-3 bg-white shadow-md rounded-2xl p-6 mt-8 space-y-4 group relative">
           {/* Edit Button */}
@@ -77,6 +88,11 @@ function Profile() {
               className="w-32 h-32 rounded-full mx-auto"
             />
           </div>
+          {error && (
+            <div className="text-red-500 font-semibold text-center mb-2">
+              {error}
+            </div>
+          )}
           <h2 className="text-2xl font-semibold mb-4 text-center">
             {isEditing ? (
               <input
@@ -110,7 +126,7 @@ function Profile() {
             <label className="text-gray-600 font-medium">Phone:</label>
             {isEditing ? (
               <input
-                type="text"
+                type="number"
                 name="phone"
                 value={tempUser.phone || ""}
                 onChange={handleChange}
@@ -138,7 +154,7 @@ function Profile() {
         </div>
         {/* Save Changes/ Cancel Button */}
         {isEditing && (
-          <div className="col-span-3 col-end-10 mt-4 flex flex-row-reverse gap-2 font-bold">
+          <div className="text-xs md:text-5xs col-span-3 col-end-10 mt-4 flex flex-row-reverse gap-2 font-bold">
             <button
               onClick={handleSave}
               className="float-right border-2 border-black text-black bg-[#ffc22c]  px-4 py-2 cursor-pointer hover:bg-black hover:text-[#ffc22c]"

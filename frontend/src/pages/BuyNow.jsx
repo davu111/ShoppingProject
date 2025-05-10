@@ -58,6 +58,15 @@ function BuyNow() {
       setError("Please enter your phone number and address.");
       return;
     }
+    if (phone.length !== 10) {
+      setError("Please enter a valid 10 digit phone number");
+      return;
+    }
+    if (/[^a-zA-Z0-9\s]/.test(address)) {
+      setError("Please enter an address without special characters.");
+      return;
+    }
+
     setError("");
     const products = [];
     items.forEach((item) =>

@@ -48,14 +48,16 @@ function SmallCard({
             className="border-y-1 border-gray-500 px-1 flex items-center justify-center font-bold focus:outline-none w-6 text-center"
             value={quantity}
             onChange={(e) => {
-              onQuantityChange(e.target.value);
+              if (e.target.value >= 1 && e.target.value <= item.amount)
+                onQuantityChange(e.target.value);
+
               setIsEditing(true);
             }}
           ></input>
           <div
             className="border-1 border-gray-500 p-1"
             onClick={() => {
-              onQuantityChange(Math.min(100, quantity + 1));
+              onQuantityChange(Math.min(item.amount, quantity + 1));
               setIsEditing(true);
             }}
           >
