@@ -1,21 +1,23 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../contexts/axios";
+import { useAuth } from "../contexts/AuthContext";
 
 import HeaderBar from "../components/HeaderBar";
 import ConfirmCard from "../components/ConfirmCard";
-const URL = "http://localhost:3000";
+// const URL = "http://localhost:3000";
 
 function Shipping() {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
 
-  const storedUser = JSON.parse(localStorage.getItem("user"));
-  if (!storedUser || !storedUser._id) navigate("/signin");
+  // const storedUser = JSON.parse(localStorage.getItem("user"));
+  const { user: storedUser } = useAuth();
+  if (!storedUser || !storedUser._id) navigate("/profile/signin");
 
   const fetchOrders = () => {
     axios
-      .get(`${URL}/orders/getOrder/${storedUser._id}?status=shipping`)
+      .get(`/orders/getOrder/${storedUser._id}?status=shipping`)
       .then((response) => setOrders(response.data))
       .catch((error) => console.error(error));
   };
@@ -26,7 +28,7 @@ function Shipping() {
 
   const handleReceived = (orderId) => {
     axios
-      .put(`${URL}/orders/updateOrder/${storedUser._id}/${orderId}`, {
+      .put(`/orders/updateOrder/${storedUser._id}/${orderId}`, {
         status: "completed",
       })
       .then((response) => {
@@ -67,7 +69,7 @@ function Shipping() {
             </div>
           ))
         ) : (
-          <div className="col-start-5 col-span-4 font-bold">
+          <div className="col-start-5 col-span-4 text-xs md:text-xl font-bold">
             No Shipping Order
           </div>
         )}

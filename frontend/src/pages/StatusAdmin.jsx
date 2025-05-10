@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 
-import Header from "../components/Header";
 import OrderItem from "../components/OrderItem";
 import StatusAdminHeader from "../components/StatusAdminHeader";
+import PopUp from "../components/PopUp";
 
 const URL = "http://localhost:3000";
 const cols = [
@@ -91,6 +92,7 @@ function StatusAdmin() {
 
 function OrderStatus({ order, fetchOrders }) {
   const { _id: orderId, user, status, ...rest } = order;
+  const [isPopUp, setIsPopUp] = useState("");
 
   const updateStatus = (status) => {
     axios
@@ -102,9 +104,29 @@ function OrderStatus({ order, fetchOrders }) {
         fetchOrders();
       })
       .catch((error) => console.error(error));
+    setIsPopUp("");
   };
 
-  const handleAccept = () => updateStatus("shipping");
+  const handleAccept = (products) => {
+    updateStatus("shipping");
+
+    products.forEach((product) => {
+      axios
+        .put(`${URL}/products/updateProduct/${product.product}`, {
+          quantity: product.quantity,
+        })
+        .then((response) => {
+          console.log("Updated:", response.data);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 400) {
+            toast.error(error.response.data.message);
+          } else {
+            console.error("Unexpected error:", error);
+          }
+        });
+    });
+  };
   const handleReject = () => updateStatus("reject");
 
   return (
@@ -113,13 +135,13 @@ function OrderStatus({ order, fetchOrders }) {
         <div className="flex items-center flex-row-reverse gap-4 font-bold ">
           <div
             className=" text-green-700 cursor-pointer"
-            onClick={() => handleAccept()}
+            onClick={() => setIsPopUp("confirm")}
           >
             <FontAwesomeIcon icon={faCheck} />
           </div>
           <div
             className=" text-red-700 cursor-pointer"
-            onClick={() => handleReject()}
+            onClick={() => setIsPopUp("reject")}
           >
             <FontAwesomeIcon icon={faXmark} />
           </div>
@@ -133,6 +155,22 @@ function OrderStatus({ order, fetchOrders }) {
       )}
       {status === "completed" && (
         <div className="text-green-700 flex flex-row-reverse">Completed</div>
+      )}
+      {isPopUp === "confirm" && (
+        <PopUp
+          onConfirm={() => handleAccept(order.products)}
+          onClose={() => setIsPopUp("")}
+          title="Accept?"
+          message="Are you sure you want to accept this order?"
+        />
+      )}
+      {isPopUp === "reject" && (
+        <PopUp
+          onConfirm={() => handleReject}
+          onClose={() => setIsPopUp("")}
+          title="Reject?"
+          message="Are you sure you want to reject this order?"
+        />
       )}
     </div>
   );

@@ -20,7 +20,7 @@ function Profile() {
 
   useEffect(() => {
     // const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (!storedUser || !storedUser._id) return navigate("/signin");
+    if (!storedUser || !storedUser._id) return navigate("/profile/signin");
     axios
       .get(`/users/getUser/${storedUser._id}`)
       .then((response) => {
@@ -138,7 +138,7 @@ function Profile() {
         </div>
         {/* Save Changes/ Cancel Button */}
         {isEditing && (
-          <div className="col-span-3 col-end-10 mt-4 flex flex-row-reverse gap-2">
+          <div className="col-span-3 col-end-10 mt-4 flex flex-row-reverse gap-2 font-bold">
             <button
               onClick={handleSave}
               className="float-right border-2 border-black text-black bg-[#ffc22c]  px-4 py-2 cursor-pointer hover:bg-black hover:text-[#ffc22c]"

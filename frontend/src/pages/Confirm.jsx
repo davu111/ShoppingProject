@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../contexts/axios";
+import { useAuth } from "../contexts/AuthContext";
 
 import HeaderBar from "../components/HeaderBar";
 import ConfirmCard from "../components/ConfirmCard";
@@ -13,23 +14,24 @@ function Confirm() {
   const [orderId, setOrderId] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  const storedUser = JSON.parse(localStorage.getItem("user"));
+  // const storedUser = JSON.parse(localStorage.getItem("user"));
+  const { user: storedUser } = useAuth();
 
   const fetchOrders = () => {
     axios
-      .get(`${URL}/orders/getOrder/${storedUser._id}?status=confirm`)
+      .get(`/orders/getOrder/${storedUser._id}?status=confirm`)
       .then((response) => setOrders(response.data))
       .catch((error) => console.error(error));
   };
 
   useEffect(() => {
-    if (!storedUser || !storedUser._id) return navigate("/signin");
+    if (!storedUser || !storedUser._id) return navigate("/profile/signin");
     fetchOrders();
   }, []);
 
   const handleCancel = (orderId) => {
     axios
-      .delete(`${URL}/orders/deleteOrder/${storedUser._id}/${orderId}`)
+      .delete(`/orders/deleteOrder/${storedUser._id}/${orderId}`)
       .then((response) => {
         console.log(response.data);
         setIsOpen(false);
@@ -71,7 +73,7 @@ function Confirm() {
             </div>
           ))
         ) : (
-          <div className="col-start-5 col-span-4 font-bold">
+          <div className="col-start-5 col-span-4 text-xs md:text-xl font-bold">
             No Confirm Order
           </div>
         )}

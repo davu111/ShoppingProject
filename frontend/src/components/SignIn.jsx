@@ -40,7 +40,7 @@ function SignIn() {
 
       if (userData === "Login successful") {
         // localStorage.setItem("user", JSON.stringify(userData));
-        // const res = await axios.get(`/users/profile`);
+        const res = await axios.get(`/users/getProfile`);
         console.log(res.data);
         setUser(res.data); // cập nhật user vào AuthContext
         setError("");
@@ -99,7 +99,7 @@ function SignIn() {
             <button
               type="submit"
               className="p-4 border bg-white text-black py-2 rounded hover:border-black/70 hover:text-black/70 transition cursor-pointer"
-              onClick={() => navigate("/signup")}
+              onClick={() => navigate("/profile/signup")}
             >
               Sign Up
             </button>

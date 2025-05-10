@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
     } else {
       setChecking(false);
     }
-  }, [user]);
+  }, []);
 
   const logout = async () => {
     await axios.post(`/users/logout`);

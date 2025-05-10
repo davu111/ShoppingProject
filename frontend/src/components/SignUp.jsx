@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import axios from "axios";
+import axios from "../contexts/axios";
+import { useAuth } from "../contexts/AuthContext";
 
 import Header from "./Header";
 
@@ -9,6 +10,7 @@ const URL = "http://localhost:3000";
 
 function SignUp() {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
 
   const [formData, setFormData] = useState({
     account: "",
@@ -25,7 +27,7 @@ function SignUp() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const { account, password, confirmPassword } = formData;
@@ -42,18 +44,20 @@ function SignUp() {
 
     setError("");
 
-    axios
-      .post(`${URL}/users/createUser`, formData)
-      .then((response) => {
-        console.log(response.data);
-        // localStorage.setItem("user", JSON.stringify(response.data));
+    try {
+      const response = await axios.post(`/users/createUser`, formData);
+      console.log("User created:", response.data);
 
-        navigate("/profile");
-      })
-      .catch((error) => {
-        console.error("Error creating user:", error);
-        setError("An error occurred while creating the user.");
-      });
+      const res = await axios.get(`/users/getProfile`); // Đợi lấy profile
+      await axios.post(`/carts/createCart/${res.data._id}`);
+      console.log("Fetched profile:", res.data);
+
+      setUser(res.data); // Gọi context để lưu user
+      navigate("/profile");
+    } catch (error) {
+      console.error("Error creating user:", error);
+      setError("Duplicate account.");
+    }
   };
 
   return (

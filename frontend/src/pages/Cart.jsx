@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import axios from "../contexts/axios";
 import { useAuth } from "../contexts/AuthContext";
-import axios from "axios";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -10,7 +10,7 @@ import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import Header from "../components/Header";
 import SmallCard from "../components/SmallCard";
 import SubCard from "../components/SubCard";
-const URL = "http://localhost:3000";
+// const URL = "http://localhost:3000";
 
 function Cart() {
   const navigate = useNavigate();
@@ -25,13 +25,13 @@ function Cart() {
   const { user } = useAuth();
   useEffect(() => {
     console.log(user);
-    if (!user || !user._id) return navigate("/signin");
+    if (!user || !user._id) return navigate("/profile/signin");
   }, []);
 
   useEffect(() => {
     if (user) {
       axios
-        .get(`${URL}/carts/getCart/${user._id}`)
+        .get(`/carts/getCart/${user._id}`)
         .then((response) => {
           const products = response.data || [];
           setLists(products);
@@ -85,7 +85,7 @@ function Cart() {
 
   const handleDoneEditing = () => {
     axios
-      .put(`${URL}/carts/updateQuantity/${user._id}`, itemQuantities)
+      .put(`/carts/updateQuantity/${user._id}`, itemQuantities)
       .then((response) => {
         console.log(response.data);
       })
@@ -98,7 +98,7 @@ function Cart() {
 
   const handleDelete = (id) => {
     axios
-      .delete(`${URL}/carts/deleteProduct/${user._id}/${id}`)
+      .delete(`/carts/deleteProduct/${user._id}/${id}`)
       .then((response) => {
         console.log(response.data);
       })

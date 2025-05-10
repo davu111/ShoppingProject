@@ -10,25 +10,27 @@ import {
   faXmark,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
-import axios from "axios";
+import axios from "../contexts/axios";
+import { useAuth } from "../contexts/AuthContext";
 
-const URL = "http://localhost:3000";
+// const URL = "http://localhost:3000";
 
 function Item({ onClose, item }) {
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
   const navigate = useNavigate();
+  const { user: storedUser } = useAuth();
 
   const handleAddToCart = (item, quantity) => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
+    // const storedUser = JSON.parse(localStorage.getItem("user"));
 
     if (!storedUser || !storedUser._id) {
       console.log("User not logged in");
-      navigate("/signin");
+      navigate("/profile/signin");
       return;
     }
     axios
-      .post(`${URL}/carts/addProduct/${storedUser._id}`, {
+      .post(`/carts/addProduct/${storedUser._id}`, {
         product_id: item._id,
         quantity: quantity,
       })

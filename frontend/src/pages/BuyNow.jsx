@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../contexts/axios";
+import { useAuth } from "../contexts/AuthContext";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -12,7 +13,7 @@ import Header from "../components/Header";
 
 import panner from "../assets/panner.jpg";
 
-const URL = "http://localhost:3000";
+// const URL = "http://localhost:3000";
 
 function BuyNow() {
   const location = useLocation();
@@ -28,11 +29,11 @@ function BuyNow() {
 
   const quantity = products.reduce((total) => total + 1, 0);
   const [total, setTotal] = useState(0);
-  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const { user: storedUser } = useAuth();
 
   useEffect(() => {
-    if (!storedUser || !storedUser._id) return navigate("/signin");
-    axios.get(`${URL}/users/getUser/${storedUser._id}`).then((response) => {
+    if (!storedUser || !storedUser._id) return navigate("/profile/signin");
+    axios.get(`/users/getUser/${storedUser._id}`).then((response) => {
       setPhone(response.data.phone);
       setAddress(response.data.address);
     });
@@ -47,13 +48,13 @@ function BuyNow() {
   const deleteProduct = () => {
     const productIds = products.map((item) => item._id);
     axios
-      .post(`${URL}/carts/deleteMany/${storedUser._id}`, { productIds })
+      .post(`/carts/deleteMany/${storedUser._id}`, { productIds })
       .then((res) => console.log(res.data))
       .catch((err) => console.error(err));
   };
 
   const handleOrder = () => {
-    if (!phone.trim() || !address.trim()) {
+    if (!phone || !address || !phone.trim() || !address.trim()) {
       setError("Please enter your phone number and address.");
       return;
     }
@@ -66,7 +67,7 @@ function BuyNow() {
       })
     );
     axios
-      .post(`${URL}/orders/createOrder/${storedUser._id}`, {
+      .post(`/orders/createOrder/${storedUser._id}`, {
         products: products,
         payment: selected,
         total: total,

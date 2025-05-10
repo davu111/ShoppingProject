@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,13 +19,32 @@ function Navbar({ isCollapsed, setIsCollapsed, onCloseMobileNav }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const [active, setActive] = useState(location.pathname);
+  const [active, setActive] = useState("/");
+
+  useEffect(() => {
+    const currentPath = location.pathname;
+
+    // Tìm path nào trong danh sách `paths` là prefix của `currentPath`
+    let matched = paths.find(
+      (path) => currentPath === path || currentPath.startsWith(path + "/")
+    );
+
+    if (
+      currentPath === "/status_admin" ||
+      currentPath.startsWith("/status_admin" + "/")
+    ) {
+      matched = "/status";
+    }
+
+    // Nếu không khớp, thì default là "/"
+    setActive(matched || "/");
+  }, [location.pathname]);
 
   const handleNavClick = (path) => {
     // const user = JSON.parse(localStorage.getItem("user"));
 
     if (path === "/profile") {
-      !user ? navigate("/signin") : navigate("/profile");
+      !user ? navigate("/profile/signin") : navigate("/profile");
     } else if (path === "/status") {
       user?.role === "admin"
         ? navigate("/status_admin")
@@ -34,13 +53,14 @@ function Navbar({ isCollapsed, setIsCollapsed, onCloseMobileNav }) {
       navigate(path);
     }
 
-    setActive(path);
+    // setActive(path);
     onCloseMobileNav?.();
   };
 
   const handleLogout = async () => {
     await logout();
-    navigate("/signin");
+    // setActive("/");
+    navigate("/");
 
     onCloseMobileNav?.();
   };

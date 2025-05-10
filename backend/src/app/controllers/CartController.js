@@ -27,6 +27,17 @@ class CartController {
       next(error);
     }
   }
+  // [POST] /carts/createCart/:user_id
+  async createCart(req, res, next) {
+    try {
+      const userId = req.params.id;
+      const newCart = new Cart({ user: userId, products: [] });
+      await newCart.save();
+      res.json(newCart);
+    } catch (error) {
+      next(error);
+    }
+  }
 
   // [POST] /carts/:user_id (add product to cart)
   async addProduct(req, res, next) {

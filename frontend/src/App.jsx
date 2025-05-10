@@ -68,8 +68,8 @@ function App() {
             />
             <Route path="/profile" element={<Profile />} />
             <Route path="/cart/buynow" element={<BuyNow />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/signin" element={<SignIn />} />
+            <Route path="/profile/signup" element={<SignUp />} />
+            <Route path="/profile/signin" element={<SignIn />} />
             <Route
               path="/status_admin"
               element={<Navigate to="/status_admin/table" />}

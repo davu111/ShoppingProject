@@ -24,7 +24,22 @@ class UserController {
     try {
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const user = await User.create({ ...req.body, password: hashedPassword });
-      res.json(user);
+
+      const token = jwt.sign(
+        { id: user._id, account: user.account, role: user.role },
+        JWT_SECRET,
+        { expiresIn: "1d" }
+      );
+
+      res
+        .cookie("token", token, {
+          httpOnly: true,
+          sameSite: "strict",
+          secure: false,
+          maxAge: 24 * 60 * 60 * 1000,
+        })
+        .status(201)
+        .json({ message: "User created", user });
     } catch (err) {
       next(err);
     }
@@ -65,11 +80,10 @@ class UserController {
   }
 
   // [GET] /users/profile
-  async profile(req, res) {
+  async getProfile(req, res) {
     const token = req.cookies.token;
-    console.log(token);
 
-    if (!token) return res.status(401).json({ message: "Not authenticated" });
+    if (!token) return res.status(401).json({ message: "Not authenticated??" });
 
     try {
       const decoded = jwt.verify(token, JWT_SECRET);
