@@ -17,26 +17,37 @@ class ProductController {
 
   //[PUT] /products/:id
   // [PUT] /products/:id
-  updateProduct(req, res, next) {
+  async updateProduct(req, res, next) {
     const quantityToReduce = req.body.quantity;
 
-    Product.findById(req.params.id)
-      .then((product) => {
-        if (!product) {
-          return res.status(404).json({ message: "Product not found" });
-        }
+    if (
+      quantityToReduce === undefined ||
+      typeof quantityToReduce !== "number" ||
+      quantityToReduce <= 0
+    ) {
+      return res.status(400).json({ message: "Invalid quantity" });
+    }
 
-        if (product.amount < quantityToReduce) {
-          return res
-            .status(400)
-            .json({ message: `Not enough stock for ${product.name}` });
-        }
+    try {
+      const product = await Product.findById(req.params.id);
 
-        product.amount -= quantityToReduce;
-        return product.save();
-      })
-      .then((updatedProduct) => res.json(updatedProduct))
-      .catch(next);
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      if (product.amount < quantityToReduce) {
+        return res.status(400).json({
+          message: `Not enough stock for ${product.title}. Only ${product.amount} left.`,
+        });
+      }
+
+      product.amount -= quantityToReduce;
+      const updated = await product.save();
+      res.json(updated);
+    } catch (error) {
+      console.error("Unexpected error:", error);
+      next(error);
+    }
   }
 }
 

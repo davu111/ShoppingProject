@@ -62,7 +62,7 @@ function BuyNow() {
       setError("Please enter a valid 10 digit phone number");
       return;
     }
-    if (/[^a-zA-Z0-9\s]/.test(address)) {
+    if (/[^\p{L}\p{N}\s.,-]/u.test(address)) {
       setError("Please enter an address without special characters.");
       return;
     }

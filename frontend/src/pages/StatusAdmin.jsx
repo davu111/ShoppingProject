@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 
@@ -107,26 +108,47 @@ function OrderStatus({ order, fetchOrders }) {
     setIsPopUp("");
   };
 
-  const handleAccept = (products) => {
-    updateStatus("shipping");
+  const handleAccept = async (products) => {
+    const errorMessages = [];
 
-    products.forEach((product) => {
-      axios
-        .put(`${URL}/products/updateProduct/${product.product}`, {
+    await Promise.all(
+      products.map((product) => {
+        console.log("Sending:", {
+          id: product.product,
           quantity: product.quantity,
-        })
-        .then((response) => {
-          console.log("Updated:", response.data);
-        })
-        .catch((error) => {
-          if (error.response && error.response.status === 400) {
-            toast.error(error.response.data.message);
-          } else {
-            console.error("Unexpected error:", error);
-          }
         });
-    });
+        return axios
+          .put(`${URL}/products/updateProduct/${product.product}`, {
+            quantity: product.quantity,
+          })
+          .then((response) => {
+            console.log("Updated:", response.data);
+          })
+          .catch((error) => {
+            if (error.response && error.response.status === 400) {
+              errorMessages.push(error.response.data.message);
+            } else {
+              console.error("Unexpected error:", error);
+            }
+          });
+      })
+    );
+    if (errorMessages.length > 0) {
+      // Gộp các lỗi và hiển thị
+      setIsPopUp("");
+      toast.error(
+        <div>
+          {errorMessages.map((msg, index) => (
+            <div key={index}>{msg}</div>
+          ))}
+        </div>
+      );
+    } else {
+      updateStatus("shipping");
+      toast.success("Order accepted successfully"); // ✅ Cũng có thể dùng alert ở đây nếu muốn đồng bộ
+    }
   };
+
   const handleReject = () => updateStatus("reject");
 
   return (
@@ -166,7 +188,7 @@ function OrderStatus({ order, fetchOrders }) {
       )}
       {isPopUp === "reject" && (
         <PopUp
-          onConfirm={() => handleReject}
+          onConfirm={handleReject}
           onClose={() => setIsPopUp("")}
           title="Reject?"
           message="Are you sure you want to reject this order?"

@@ -155,7 +155,7 @@ function Cart() {
           {/* {console.log(checkedItems)} */}
         </div>
         {/* {console.log(itemQuantities)} */}
-        <div className="col-start-3 col-span-7 overflow-auto max-h-[62vh] ">
+        <div className="col-start-3 col-span-7 overflow-auto max-h-[62vh] no-scrollbar">
           {lists.map((item) => (
             <SmallCard
               item={item}

@@ -41,12 +41,12 @@ function Profile() {
 
   const handleSave = () => {
     // const storedUser = JSON.parse(localStorage.getItem("user"));
-    console.log(tempUser);
+    // console.log(tempUser);
     if (tempUser.phone.length != 10) {
       setError("Please enter a valid 10 digit phone number");
       return;
     }
-    if (/[^a-zA-Z0-9\s]/.test(tempUser.address)) {
+    if (/[^\p{L}\p{N}\s.,-]/u.test(tempUser.address)) {
       setError("Please enter an address without special characters.");
       return;
     }

@@ -24,6 +24,10 @@
   display: none;
 }
 
+.Toastify__toast-container {
+  z-index: 9999 !important;
+}
+
 /* Ẩn spinner trong Chrome, Safari, Edge */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {

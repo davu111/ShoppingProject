@@ -5,6 +5,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import { useState } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
@@ -95,6 +97,7 @@ function App() {
           </div>
         </div>
       )}
+      <ToastContainer position="top-center" autoClose={5000} theme="colored" />
     </Router>
   );
 }
