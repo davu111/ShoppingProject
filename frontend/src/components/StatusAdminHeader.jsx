@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 import Header from "./Header";
 
-const header = ["Table", "Analysis"];
+const header = ["Table", "Analysis", "Chatbox"];
 
 function StatusAdminHeader({ title }) {
   const navigate = useNavigate();
