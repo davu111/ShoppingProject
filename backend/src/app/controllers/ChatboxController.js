@@ -1,4 +1,4 @@
-const { GEMINI_API_URL, DB_SCHEMA } = require("../controllers/promt");
+const { GEMINI_API_URL, DB_SCHEMA } = require("../../config/chatbox/promt");
 const Cart = require("../models/Cart");
 const Order = require("../models/Order");
 const Product = require("../models/Product");

@@ -10,30 +10,47 @@ import StatusAdminHeader from "../components/StatusAdminHeader";
 import PopUp from "../components/PopUp";
 
 const URL = "http://localhost:3000";
-const cols = [
-  "Order ID",
-  "Date",
-  "Phone",
-  "Address",
-  "Total",
-  "Payment",
-  "Status",
-];
 
 function StatusAdmin() {
   const [orders, setOrders] = useState([]);
   const [orderOpen, setOrderOpen] = useState(null);
+  const [sortConfig, setSortConfig] = useState({
+    key: "date",
+    direction: "desc",
+  });
 
-  const fetchOrders = () => {
-    axios
-      .get(`${URL}/orders/getOrders`)
-      .then((response) => setOrders(response.data))
-      .catch((error) => console.error(error));
+  const cols = ["ID", "Date", "Phone", "Address", "Total", "Payment", "Status"];
+  const colKeyMap = [
+    "_id",
+    "date",
+    "phone",
+    "address",
+    "total",
+    "payment",
+    "status",
+  ];
+
+  const fetchOrders = async (sortKey = "date", direction = "desc") => {
+    try {
+      const res = await axios.get(`${URL}/orders/getOrders`, {
+        params: { sortBy: sortKey, direction },
+      });
+      setOrders(res.data);
+    } catch (err) {
+      console.error("Failed to fetch orders", err);
+    }
   };
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    fetchOrders(sortConfig.key, sortConfig.direction);
+  }, [sortConfig]);
+
+  const handleSort = (key) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "asc" ? "desc" : "asc",
+    }));
+  };
 
   return (
     <>
@@ -42,11 +59,24 @@ function StatusAdmin() {
         <table className="w-full text-sm text-left bg-white text-black border border-black">
           <thead className="sticky top-0 text-xs uppercase bg-maincolor text-black">
             <tr>
-              {cols.map((col) => (
-                <th key={col} className="px-4 py-2">
-                  {col}
-                </th>
-              ))}
+              {cols.map((col, index) => {
+                const keycol = colKeyMap[index];
+                const isActive = sortConfig.key === keycol;
+                return (
+                  <th
+                    key={col}
+                    className="px-4 py-2 cursor-pointer select-none hover:bg-yellow-500"
+                    onClick={() => handleSort(keycol)}
+                  >
+                    {col}
+                    {isActive
+                      ? sortConfig.direction === "asc"
+                        ? " ↑"
+                        : " ↓"
+                      : ""}
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
@@ -77,7 +107,12 @@ function StatusAdmin() {
                 <td className="px-4 py-2">${order.total.toFixed(2)}</td>
                 <td className="px-4 py-2">{order.payment}</td>
                 <td className="px-4 py-2 capitalize">
-                  <OrderStatus order={order} fetchOrders={fetchOrders} />
+                  <OrderStatus
+                    order={order}
+                    fetchOrders={() =>
+                      fetchOrders(sortConfig.key, sortConfig.direction)
+                    }
+                  />
                 </td>
               </tr>
             ))}
@@ -154,15 +189,15 @@ function OrderStatus({ order, fetchOrders }) {
   return (
     <div>
       {status === "confirm" && (
-        <div className="flex items-center flex-row-reverse gap-4 font-bold ">
+        <div className="flex items-center justify-center gap-4 font-bold ">
           <div
-            className=" text-green-700 cursor-pointer"
+            className="text-green-700 cursor-pointer rounded-full hover:bg-green-100 px-1"
             onClick={() => setIsPopUp("confirm")}
           >
             <FontAwesomeIcon icon={faCheck} />
           </div>
           <div
-            className=" text-red-700 cursor-pointer"
+            className="text-red-700 cursor-pointer rounded-full hover:bg-red-100 px-1"
             onClick={() => setIsPopUp("reject")}
           >
             <FontAwesomeIcon icon={faXmark} />
@@ -170,13 +205,19 @@ function OrderStatus({ order, fetchOrders }) {
         </div>
       )}
       {status === "shipping" && (
-        <div className="text-gray-700 flex flex-row-reverse">Shipping</div>
+        <div className="bg-yellow-200 text-yellow-700 flex justify-center py-1 rounded">
+          Shipping
+        </div>
       )}
       {status === "reject" && (
-        <div className="text-red-700 flex flex-row-reverse">Rejected</div>
+        <div className="bg-red-200 text-red-700 flex justify-center py-1 rounded">
+          Reject
+        </div>
       )}
       {status === "completed" && (
-        <div className="text-green-700 flex flex-row-reverse">Completed</div>
+        <div className="bg-green-200 text-green-700 flex justify-center py-1 rounded">
+          Completed
+        </div>
       )}
       {isPopUp === "confirm" && (
         <PopUp

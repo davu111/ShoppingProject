@@ -141,7 +141,7 @@ function Profile() {
             <label className="text-gray-600 font-medium">Email:</label>
             {isEditing ? (
               <input
-                type="text"
+                type="email"
                 name="email"
                 value={tempUser.email || ""}
                 onChange={handleChange}

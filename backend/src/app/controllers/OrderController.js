@@ -4,7 +4,37 @@ class OrderController {
   // [GET] /orders (get all orders)
   async getOrders(req, res, next) {
     try {
-      const orders = await Order.find().sort({ date: -1 });
+      const sortBy = req.query.sortBy || "date"; // mặc định: date
+      const direction = req.query.direction === "asc" ? 1 : -1;
+
+      if (sortBy === "status") {
+        // Custom sort for status
+        const statusOrder = ["confirm", "shipping", "completed", "reject"];
+
+        const orders = await Order.aggregate([
+          {
+            $addFields: {
+              statusOrder: {
+                $indexOfArray: [statusOrder, "$status"],
+              },
+            },
+          },
+          {
+            $sort: {
+              statusOrder: direction,
+            },
+          },
+          {
+            $project: {
+              statusOrder: 0, // loại bỏ field phụ
+            },
+          },
+        ]);
+
+        return res.json(orders);
+      }
+
+      const orders = await Order.find().sort({ [sortBy]: direction });
       res.json(orders);
     } catch (error) {
       next(error);
@@ -29,7 +59,18 @@ class OrderController {
   // [GET] /orders/statusStats
   async getOrderStatusStats(req, res, next) {
     try {
+      const { month } = req.query; // format: "2025-5"
+      const match = {};
+
+      if (month && month !== "All") {
+        const [year, m] = month.split("-").map(Number);
+        const start = new Date(year, m - 1, 1);
+        const end = new Date(year, m, 1);
+        match.date = { $gte: start, $lt: end };
+      }
+
       const stats = await Order.aggregate([
+        { $match: match },
         {
           $group: {
             _id: "$status",
@@ -37,7 +78,40 @@ class OrderController {
           },
         },
       ]);
+
       res.json(stats);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getAvailableMonths(req, res, next) {
+    try {
+      const months = await Order.aggregate([
+        {
+          $group: {
+            _id: {
+              year: { $year: "$date" },
+              month: { $month: "$date" },
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            month: {
+              $concat: [
+                { $toString: "$_id.year" },
+                "-",
+                { $toString: "$_id.month" },
+              ],
+            },
+          },
+        },
+        { $sort: { month: -1 } },
+      ]);
+
+      res.json(months.map((item) => item.month));
     } catch (error) {
       next(error);
     }
@@ -46,7 +120,18 @@ class OrderController {
   // [GET] /orders/topProducts
   async getTopProducts(req, res, next) {
     try {
+      const { month } = req.query;
+      const match = {};
+
+      if (month && month !== "All") {
+        const [year, m] = month.split("-").map(Number);
+        const start = new Date(year, m - 1, 1);
+        const end = new Date(year, m, 1);
+        match.date = { $gte: start, $lt: end };
+      }
+
       const topProducts = await Order.aggregate([
+        { $match: match },
         { $unwind: "$products" },
         {
           $group: {
@@ -56,7 +141,7 @@ class OrderController {
         },
         {
           $lookup: {
-            from: "products", // tên collection sản phẩm
+            from: "products",
             localField: "_id",
             foreignField: "_id",
             as: "product",
@@ -73,6 +158,7 @@ class OrderController {
           },
         },
       ]);
+
       res.json(topProducts);
     } catch (error) {
       next(error);

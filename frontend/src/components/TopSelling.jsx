@@ -16,14 +16,37 @@ const URL = "http://localhost:3000";
 function TopSelling() {
   const [data, setData] = useState([]);
 
+  const [month, setMonth] = useState("All");
+  const [availableMonths, setAvailableMonths] = useState([]);
+
   useEffect(() => {
-    axios.get(`${URL}/orders/topProducts`).then((res) => {
-      setData(res.data);
+    axios.get(`${URL}/orders/availableMonths`).then((res) => {
+      setAvailableMonths(["All", ...res.data]);
     });
   }, []);
 
+  useEffect(() => {
+    const query = month !== "All" ? `?month=${month}` : "";
+    axios.get(`${URL}/orders/topProducts${query}`).then((res) => {
+      setData(res.data);
+    });
+  }, [month]);
+
   return (
     <div className="w-full px-4 md:px-6 lg:px-8 py-6 bg-white">
+      <div className="mb-4">
+        <select
+          className="p-2 border rounded"
+          value={month}
+          onChange={(e) => setMonth(e.target.value)}
+        >
+          {availableMonths.map((m) => (
+            <option key={m} value={m}>
+              {m}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className="w-full h-[500px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart

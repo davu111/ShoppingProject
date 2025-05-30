@@ -44,29 +44,45 @@ const renderLabel = ({ percent }) => `${(percent * 100).toFixed(1)}%`;
 
 const StatusPieChart = () => {
   const [data, setData] = useState([]);
+  const [month, setMonth] = useState("All");
+  const [availableMonths, setAvailableMonths] = useState([]);
 
   useEffect(() => {
-    axios.get(`${URL}/orders/statusStats`).then((res) => {
-      const raw = res.data;
+    // Gọi API để lấy danh sách các tháng có đơn hàng
+    axios.get(`${URL}/orders/availableMonths`).then((res) => {
+      setAvailableMonths(["All", ...res.data]);
+    });
+  }, []);
 
-      // Convert raw data to map for easy lookup
+  useEffect(() => {
+    const query = month !== "All" ? `?month=${month}` : "";
+    axios.get(`${URL}/orders/statusStats${query}`).then((res) => {
+      const raw = res.data;
       const map = {};
       raw.forEach((item) => {
         map[item._id] = item.count;
       });
-
-      // Sắp xếp theo STATUS_ORDER và gán count tương ứng (nếu không có thì là 0)
       const formatted = STATUS_ORDER.map((status) => ({
         name: status,
         value: map[status] || 0,
       }));
-
       setData(formatted);
     });
-  }, []);
+  }, [month]);
 
   return (
     <div className="w-full max-w-md mx-auto px-4">
+      <select
+        className="mb-4 p-2 border rounded"
+        value={month}
+        onChange={(e) => setMonth(e.target.value)}
+      >
+        {availableMonths.map((m) => (
+          <option key={m} value={m}>
+            {m}
+          </option>
+        ))}
+      </select>
       <div className="w-full h-[400px]">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>

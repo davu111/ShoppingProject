@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 // ...other imports
-import { URL } from "./constants";
+import { URL } from "../contexts/constants";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
