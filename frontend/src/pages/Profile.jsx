@@ -50,6 +50,10 @@ function Profile() {
       setError("Please enter an address without special characters.");
       return;
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(tempUser.email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
     setError("");
     axios
       .put(`/users/updateUser/${storedUser._id}`, tempUser)

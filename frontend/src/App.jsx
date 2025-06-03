@@ -22,6 +22,7 @@ import Profile from "./pages/Profile";
 import BuyNow from "./pages/BuyNow";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
+import EmailVerification from "./components/EmailVerification";
 
 import Confirm from "./pages/Confirm";
 import Shipping from "./pages/Shipping";
