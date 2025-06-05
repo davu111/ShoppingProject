@@ -42,7 +42,7 @@ function Profile() {
   const handleSave = () => {
     // const storedUser = JSON.parse(localStorage.getItem("user"));
     // console.log(tempUser);
-    if (tempUser.phone.length != 10) {
+    if (tempUser.phone && tempUser.phone.length != 10) {
       setError("Please enter a valid 10 digit phone number");
       return;
     }
@@ -50,10 +50,10 @@ function Profile() {
       setError("Please enter an address without special characters.");
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(tempUser.email)) {
-      setError("Please enter a valid email address.");
-      return;
-    }
+    // if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(tempUser.email)) {
+    //   setError("Please enter a valid email address.");
+    //   return;
+    // }
     setError("");
     axios
       .put(`/users/updateUser/${storedUser._id}`, tempUser)
@@ -143,17 +143,8 @@ function Profile() {
 
           <div>
             <label className="text-gray-600 font-medium">Email:</label>
-            {isEditing ? (
-              <input
-                type="email"
-                name="email"
-                value={tempUser.email || ""}
-                onChange={handleChange}
-                className="w-full border p-2 rounded mt-1"
-              />
-            ) : (
-              <p className="text-lg">{user.email}</p>
-            )}
+
+            <p className="text-lg">{user.email}</p>
           </div>
         </div>
         {/* Save Changes/ Cancel Button */}
